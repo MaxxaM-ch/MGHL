@@ -14,6 +14,18 @@ MGHL (Mini Games Hockey League) — site de mini-jeux quotidiens autour de la LN
 
 Player Grid envisagé mais hors périmètre du MVP (voir spec).
 
+## Commandes
+
+```bash
+npm install       # installer les dépendances
+npm run dev       # serveur de dev (Astro)
+npm run build     # build de production
+npm run preview   # prévisualiser le build
+npm run test      # tests unitaires (Vitest)
+```
+
+Pour lancer un seul fichier de test : `npm run test -- <nom-du-fichier>`.
+
 ## Stack
 
 - **Astro** + îlots **React** (TypeScript) — statique par défaut, JS uniquement sur les composants interactifs
