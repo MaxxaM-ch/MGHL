@@ -1,0 +1,14 @@
+name: Daily rebuild
+
+on:
+  schedule:
+    # 06:00 UTC — after the previous night's NHL games are over and stats are final
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  trigger-rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify build hook
+        run: curl --fail --silent --show-error -X POST "${{ secrets.NETLIFY_BUILD_HOOK_URL }}"
