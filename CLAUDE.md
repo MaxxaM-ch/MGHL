@@ -54,7 +54,7 @@ Détail complet : `docs/superpowers/specs/2026-09-08-mghl-mvp-design.md`.
 **Git**
 - Une branche par fonctionnalité conséquente, créée depuis `master` : `feat-<slug>`, `fix-<slug>`, `config-<slug>`, `refacto-<slug>`
 - Push immédiat sur `origin` à la création de la branche
-- Commit : `<TYPE> : <description>` — `FEAT :`, `FIX :`, `CONFIG :`, `REFACTO :`
+- Commit : `<TYPE> : <description en anglais>` — `FEAT :`, `FIX :`, `CONFIG :`, `REFACTO :`
 - Merge avec `git merge --no-ff`, branche jamais supprimée après merge
 - Tag Git à chaque sortie : `v1.0.0` (jeu 1), `v1.1.0`/`v1.2.0` (correctifs), `v2.0.0` (jeu 2)...
 - Pas de Gitflow — `master` reflète toujours la prod
