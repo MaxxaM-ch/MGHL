@@ -1,0 +1,94 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+}
+
+const { title, description, href } = Astro.props;
+---
+
+<a class="card" href={href}>
+  <span class="card__accent" aria-hidden="true"></span>
+  <h3 class="card__title">{title}</h3>
+  <p class="card__description">{description}</p>
+  <span class="card__cta">Jouer <span aria-hidden="true">→</span></span>
+</a>
+
+<style lang="scss">
+  @use "../styles/variables" as v;
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.75rem 1.5rem 1.5rem;
+    border-radius: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    text-decoration: none;
+    color: var(--text);
+    overflow: hidden;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 24px -12px rgba(14, 165, 168, 0.35);
+
+      .card__accent {
+        transform: scaleX(1);
+      }
+
+      .card__cta {
+        gap: 0.5rem;
+      }
+    }
+  }
+
+  .card__accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+
+  .card__title {
+    margin: 0;
+    font-family: v.$font-display;
+    font-weight: 600;
+    font-size: 1.75rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .card__description {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.75;
+    flex-grow: 1;
+  }
+
+  .card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    transition: gap 0.2s ease;
+  }
+</style>
