@@ -15,3 +15,8 @@ $font-body: "Manrope", sans-serif;
 // Repères de mise en page
 $content-width: 1100px;
 $breakpoint-mobile: 640px;
+
+// États de comparaison (grilles de jeu)
+$feedback-exact: #16a34a;
+$feedback-close: #d97706;
+$feedback-none: #64748b;

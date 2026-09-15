@@ -1,18 +1,24 @@
-import type { AttributeComparison, GuessFeedback } from "../games/devine-le-joueur/logic";
+import type { NormalizedPlayer } from "../lib/nhl-api/types";
+import { calculateAge, type AttributeComparison, type GuessFeedback } from "../games/devine-le-joueur/logic";
+import "../styles/components/feedback-grid.scss";
 
 interface AttemptFeedbackRowProps {
-  playerName: string;
+  player: NormalizedPlayer;
   feedback: GuessFeedback;
 }
 
-const ATTRIBUTE_LABELS: { key: keyof GuessFeedback; label: string }[] = [
-  { key: "team", label: "Équipe" },
-  { key: "position", label: "Poste" },
-  { key: "nationality", label: "Nationalité" },
-  { key: "jerseyNumber", label: "Numéro" },
-  { key: "age", label: "Âge" },
-  { key: "heightCm", label: "Taille" },
-  { key: "draftYear", label: "Draft" },
+const ATTRIBUTE_CELLS: {
+  key: keyof GuessFeedback;
+  label: string;
+  value: (player: NormalizedPlayer) => string;
+}[] = [
+  { key: "team", label: "Équipe", value: (p) => p.team },
+  { key: "position", label: "Poste", value: (p) => p.position },
+  { key: "nationality", label: "Nat.", value: (p) => p.nationality },
+  { key: "jerseyNumber", label: "N°", value: (p) => `#${p.jerseyNumber}` },
+  { key: "age", label: "Âge", value: (p) => String(calculateAge(p.birthDate, new Date())) },
+  { key: "heightCm", label: "Taille", value: (p) => `${p.heightCm} cm` },
+  { key: "draftYear", label: "Draft", value: (p) => (p.draftYear === null ? "Non drafté" : String(p.draftYear)) },
 ];
 
 function symbolFor(comparison: AttributeComparison): string {
@@ -28,13 +34,32 @@ function symbolFor(comparison: AttributeComparison): string {
   }
 }
 
-export default function AttemptFeedbackRow({ playerName, feedback }: AttemptFeedbackRowProps) {
+export function FeedbackGridHeader() {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <span style={{ minWidth: 140, fontWeight: 700 }}>{playerName}</span>
-      {ATTRIBUTE_LABELS.map(({ key, label }) => (
-        <span key={key} title={label} style={{ minWidth: 32, textAlign: "center" }}>
-          {symbolFor(feedback[key])}
+    <div className="feedback-grid__row">
+      <span className="feedback-grid__cell feedback-grid__cell--header feedback-grid__cell--name" />
+      {ATTRIBUTE_CELLS.map(({ key, label }) => (
+        <span key={key} className="feedback-grid__cell feedback-grid__cell--header">
+          {label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+export default function AttemptFeedbackRow({ player, feedback }: AttemptFeedbackRowProps) {
+  return (
+    <div className="feedback-grid__row">
+      <span className="feedback-grid__cell feedback-grid__cell--name">
+        {player.firstName} {player.lastName}
+      </span>
+      {ATTRIBUTE_CELLS.map(({ key, value }) => (
+        <span
+          key={key}
+          className={`feedback-grid__cell feedback-grid__cell--${feedback[key].type}`}
+        >
+          <span className="feedback-grid__value">{value(player)}</span>
+          <span className="feedback-grid__symbol">{symbolFor(feedback[key])}</span>
         </span>
       ))}
     </div>

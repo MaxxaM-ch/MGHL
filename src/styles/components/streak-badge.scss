@@ -1,0 +1,18 @@
+@use "../variables" as *;
+
+.streak-badge {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.streak-badge__item {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: var(--card-bg);
+  font-family: $font-body;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}

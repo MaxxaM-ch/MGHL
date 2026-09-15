@@ -1,5 +1,6 @@
 import { useRef, useSyncExternalStore } from "react";
 import { getStats, type GameStats } from "../lib/storage/stats";
+import "../styles/components/streak-badge.scss";
 
 interface StreakBadgeProps {
   gameId: string;
@@ -47,9 +48,9 @@ export default function StreakBadge({ gameId }: StreakBadgeProps) {
   if (stats.gamesPlayed === 0) return null;
 
   return (
-    <div>
-      <span>Série en cours : {stats.currentStreak}</span>
-      <span> · Meilleure série : {stats.bestStreak}</span>
+    <div className="streak-badge">
+      <span className="streak-badge__item">Série en cours : {stats.currentStreak}</span>
+      <span className="streak-badge__item">Meilleure série : {stats.bestStreak}</span>
     </div>
   );
 }

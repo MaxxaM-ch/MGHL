@@ -1,0 +1,73 @@
+@use "../variables" as *;
+
+.feedback-grid {
+  display: grid;
+  grid-template-columns: minmax(100px, 1.4fr) repeat(7, minmax(58px, 1fr));
+  gap: 4px;
+  margin: 0 0 1.5rem;
+  overflow-x: auto;
+}
+
+.feedback-grid__row {
+  display: contents;
+}
+
+.feedback-grid__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 48px;
+  padding: 0.35rem 0.2rem;
+  border-radius: 8px;
+  font-family: $font-body;
+  font-size: 0.7rem;
+  text-align: center;
+  line-height: 1.15;
+}
+
+.feedback-grid__cell--name {
+  align-items: flex-start;
+  justify-content: center;
+  min-height: auto;
+  padding-left: 0.3rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.feedback-grid__cell--header {
+  min-height: auto;
+  padding-bottom: 0.3rem;
+  font-family: $font-display;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.62rem;
+  opacity: 0.65;
+}
+
+.feedback-grid__value {
+  font-weight: 700;
+}
+
+.feedback-grid__symbol {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.feedback-grid__cell--exact {
+  background: rgba($feedback-exact, 0.16);
+  color: $feedback-exact;
+}
+
+.feedback-grid__cell--higher,
+.feedback-grid__cell--lower {
+  background: rgba($feedback-close, 0.16);
+  color: $feedback-close;
+}
+
+.feedback-grid__cell--no-match {
+  background: rgba($feedback-none, 0.14);
+  color: $feedback-none;
+}

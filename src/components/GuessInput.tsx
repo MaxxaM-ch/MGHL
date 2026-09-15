@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import "../styles/components/guess-input.scss";
 
 export interface GuessOption {
   id: number;
@@ -36,28 +37,40 @@ export default function GuessInput({ options, onSubmit, disabled = false }: Gues
   }
 
   return (
-    <div>
-      <input
-        type="text"
-        value={query}
-        disabled={disabled}
-        placeholder="Nom du joueur"
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setSelectedId(null);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleSubmit();
-        }}
-      />
-      <button type="button" disabled={disabled || selectedId === null} onClick={handleSubmit}>
-        Deviner
-      </button>
+    <div className="guess-input">
+      <div className="guess-input__row">
+        <input
+          type="text"
+          className="guess-input__field"
+          value={query}
+          disabled={disabled}
+          placeholder="Nom du joueur"
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setSelectedId(null);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSubmit();
+          }}
+        />
+        <button
+          type="button"
+          className="guess-input__submit"
+          disabled={disabled || selectedId === null}
+          onClick={handleSubmit}
+        >
+          Deviner
+        </button>
+      </div>
       {suggestions.length > 0 && (
-        <ul>
+        <ul className="guess-input__suggestions">
           {suggestions.map((option) => (
             <li key={option.id}>
-              <button type="button" onClick={() => selectOption(option)}>
+              <button
+                type="button"
+                className="guess-input__suggestion"
+                onClick={() => selectOption(option)}
+              >
                 {option.label}
               </button>
             </li>

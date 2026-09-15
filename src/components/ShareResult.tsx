@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { buildShareGrid, type GuessFeedback } from "../games/devine-le-joueur/logic";
+import "../styles/components/share-result.scss";
 
 interface ShareResultProps {
   gameTitle: string;
@@ -20,9 +21,9 @@ export default function ShareResult({ gameTitle, attempts, won, maxAttempts }: S
   }
 
   return (
-    <div>
-      <p style={{ whiteSpace: "pre" }}>{shareText}</p>
-      <button type="button" onClick={handleCopy}>
+    <div className="share-result">
+      <p className="share-result__text">{shareText}</p>
+      <button type="button" className="share-result__button" onClick={handleCopy}>
         {copied ? "Copié !" : "Copier le résultat"}
       </button>
     </div>

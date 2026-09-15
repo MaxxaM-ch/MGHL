@@ -1,0 +1,78 @@
+@use "../variables" as *;
+
+.guess-input {
+  position: relative;
+}
+
+.guess-input__row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.guess-input__field {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: $font-body;
+  font-size: 0.95rem;
+}
+
+.guess-input__field:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.guess-input__submit {
+  padding: 0.65rem 1.1rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: $bg-light;
+  font-family: $font-body;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.guess-input__submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.guess-input__suggestions {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.guess-input__suggestion {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font-family: $font-body;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.guess-input__suggestion:hover {
+  background: var(--card-bg);
+}

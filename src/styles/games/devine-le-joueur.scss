@@ -1,0 +1,23 @@
+@use "../variables" as *;
+
+.devine-le-joueur {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-panel {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1rem;
+  border-radius: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  text-align: center;
+}
+
+.result-panel__message {
+  margin: 0;
+  font-family: $font-display;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}

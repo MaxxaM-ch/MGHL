@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AttemptFeedbackRow from "../../components/AttemptFeedbackRow";
+import AttemptFeedbackRow, { FeedbackGridHeader } from "../../components/AttemptFeedbackRow";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
 import ProgressiveReveal from "../../components/ProgressiveReveal";
 import ShareResult from "../../components/ShareResult";
@@ -7,6 +7,7 @@ import StreakBadge from "../../components/StreakBadge";
 import { recordResult } from "../../lib/storage/stats";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
 import { compareGuess, getBlurLevel, isWinningGuess, type GuessFeedback } from "./logic";
+import "../../styles/games/devine-le-joueur.scss";
 
 const GAME_ID = "devine-le-joueur";
 const MAX_ATTEMPTS = 6;
@@ -68,16 +69,17 @@ export default function Game({ target }: GameProps) {
   const blurPx = status === "playing" ? getBlurLevel(attempts.length, MAX_ATTEMPTS) : 0;
 
   return (
-    <div>
+    <div className="devine-le-joueur">
       <ProgressiveReveal src={target.headshotUrl} alt="Joueur mystère" blurPx={blurPx} />
 
-      {attempts.map((attempt) => (
-        <AttemptFeedbackRow
-          key={attempt.player.id}
-          playerName={playerLabel(attempt.player)}
-          feedback={attempt.feedback}
-        />
-      ))}
+      {attempts.length > 0 && (
+        <div className="feedback-grid">
+          <FeedbackGridHeader />
+          {attempts.map((attempt) => (
+            <AttemptFeedbackRow key={attempt.player.id} player={attempt.player} feedback={attempt.feedback} />
+          ))}
+        </div>
+      )}
 
       {status === "playing" &&
         (pool ? (
@@ -87,8 +89,8 @@ export default function Game({ target }: GameProps) {
         ))}
 
       {status !== "playing" && (
-        <>
-          <p>
+        <div className="result-panel">
+          <p className="result-panel__message">
             {status === "won"
               ? `Trouvé en ${attempts.length} tentative${attempts.length > 1 ? "s" : ""} !`
               : `Perdu ! Le joueur était ${playerLabel(target)}.`}
@@ -99,10 +101,9 @@ export default function Game({ target }: GameProps) {
             won={status === "won"}
             maxAttempts={MAX_ATTEMPTS}
           />
-        </>
+          <StreakBadge gameId={GAME_ID} />
+        </div>
       )}
-
-      <StreakBadge gameId={GAME_ID} />
     </div>
   );
 }
