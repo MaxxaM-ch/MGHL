@@ -1,22 +1,29 @@
-@use "variables" as v;
+@use "variables" as *;
+@use "sass:color";
 
 :root {
-  --bg: #{v.$bg-light};
-  --text: #{v.$text-light};
-  --accent: #{v.$color-teal};
-  --brand: #{v.$color-navy};
-  --card-bg: rgba(22, 48, 92, 0.04);
-  --card-border: rgba(22, 48, 92, 0.1);
+  --bg: #{$bg-light};
+  --text: #{$text-light};
+  --accent: #{$color-teal};
+  --brand: #{$color-navy};
+  --accent-rgb: #{color.channel($color-teal, "red")}, #{color.channel($color-teal, "green")},
+    #{color.channel($color-teal, "blue")};
+  --navy-rgb: #{color.channel($color-navy, "red")}, #{color.channel($color-navy, "green")},
+    #{color.channel($color-navy, "blue")};
+  --warm-white-rgb: #{color.channel($bg-light, "red")}, #{color.channel($bg-light, "green")},
+    #{color.channel($bg-light, "blue")};
+  --card-bg: rgba(var(--navy-rgb), 0.04);
+  --card-border: rgba(var(--navy-rgb), 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #{v.$bg-dark};
-    --text: #{v.$text-dark};
-    --accent: #{v.$color-teal};
-    --brand: #{v.$text-dark};
-    --card-bg: rgba(250, 247, 240, 0.05);
-    --card-border: rgba(250, 247, 240, 0.14);
+    --bg: #{$bg-dark};
+    --text: #{$text-dark};
+    --accent: #{$color-teal};
+    --brand: #{$text-dark};
+    --card-bg: rgba(var(--warm-white-rgb), 0.05);
+    --card-border: rgba(var(--warm-white-rgb), 0.14);
   }
 }
 
@@ -33,7 +40,7 @@ body {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: v.$font-body;
+  font-family: $font-body;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
