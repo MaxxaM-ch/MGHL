@@ -3,6 +3,7 @@ docs
 
 # données régénérées au build depuis l'API NHL — non versionnées
 src/data/generated/
+public/data/
 
 # build output
 dist/

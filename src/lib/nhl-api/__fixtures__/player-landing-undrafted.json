@@ -1,0 +1,16 @@
+{
+  "playerId": 8484509,
+  "firstName": {
+    "default": "Josh"
+  },
+  "lastName": {
+    "default": "Samanski"
+  },
+  "currentTeamAbbrev": "EDM",
+  "position": "C",
+  "sweaterNumber": 81,
+  "birthCountry": "DEU",
+  "birthDate": "2002-03-22",
+  "heightInCentimeters": 188,
+  "headshot": "https://assets.nhle.com/mugs/nhl/20262027/EDM/8484509.png"
+}

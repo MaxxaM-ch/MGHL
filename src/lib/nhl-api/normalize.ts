@@ -1,0 +1,23 @@
+import type { NormalizedPlayer, RawPlayerLanding, RawRosterPlayer } from "./types";
+
+export function normalizePlayer(params: {
+  roster: RawRosterPlayer;
+  landing: RawPlayerLanding;
+  team: string;
+}): NormalizedPlayer {
+  const { roster, landing, team } = params;
+
+  return {
+    id: roster.id,
+    firstName: roster.firstName.default,
+    lastName: roster.lastName.default,
+    team,
+    position: roster.positionCode,
+    jerseyNumber: roster.sweaterNumber,
+    nationality: roster.birthCountry,
+    birthDate: roster.birthDate,
+    heightCm: roster.heightInCentimeters,
+    draftYear: landing.draftDetails?.year ?? null,
+    headshotUrl: roster.headshot,
+  };
+}
