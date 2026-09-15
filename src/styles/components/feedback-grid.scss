@@ -71,3 +71,10 @@
   background: rgba($feedback-none, 0.14);
   color: $feedback-none;
 }
+
+@media (prefers-color-scheme: dark) {
+  .feedback-grid__cell--no-match {
+    background: rgba(148, 163, 184, 0.18);
+    color: #94a3b8;
+  }
+}
