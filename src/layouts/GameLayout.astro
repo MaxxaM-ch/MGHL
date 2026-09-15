@@ -1,0 +1,24 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import "../styles/layouts/game-layout.scss";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={`${title} — MGHL`} description={description}>
+  <div class="game-layout">
+    <header class="game-layout__header">
+      <a class="game-layout__back" href="/">← MGHL</a>
+      <h1 class="game-layout__title">{title}</h1>
+      <p class="game-layout__description">{description}</p>
+    </header>
+    <main class="game-layout__content">
+      <slot />
+    </main>
+  </div>
+</BaseLayout>

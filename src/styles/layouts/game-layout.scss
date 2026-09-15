@@ -1,0 +1,45 @@
+@use "../variables" as *;
+
+.game-layout {
+  max-width: $content-width;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.game-layout__header {
+  padding: 2rem 0 1.5rem;
+  text-align: center;
+}
+
+.game-layout__back {
+  display: inline-block;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  opacity: 0.7;
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+.game-layout__back:hover {
+  opacity: 1;
+}
+
+.game-layout__title {
+  font-family: $font-display;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 2rem;
+  margin: 0 0 0.5rem;
+}
+
+.game-layout__description {
+  font-family: $font-body;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.game-layout__content {
+  max-width: 480px;
+  margin: 0 auto;
+}

@@ -1,0 +1,16 @@
+---
+import GameLayout from "../../layouts/GameLayout.astro";
+import Game from "../../games/devine-le-joueur/Game.tsx";
+import { pickDailyItem } from "../../lib/daily-puzzle/seed";
+import players from "../../data/generated/players.json";
+import type { NormalizedPlayer } from "../../lib/nhl-api/types";
+
+const target = pickDailyItem(players as NormalizedPlayer[], new Date());
+---
+
+<GameLayout
+  title="Devine le joueur"
+  description="Trouve le joueur mystère du jour en 6 tentatives."
+>
+  <Game client:load target={target} />
+</GameLayout>
