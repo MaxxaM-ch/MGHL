@@ -5,12 +5,17 @@ import ProgressiveReveal from "../../components/ProgressiveReveal";
 import ShareResult from "../../components/ShareResult";
 import StreakBadge from "../../components/StreakBadge";
 import { recordResult } from "../../lib/storage/stats";
+import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
 import { compareGuess, getBlurLevel, isWinningGuess, type GuessFeedback } from "./logic";
 import "../../styles/games/devine-le-joueur.scss";
 
 const GAME_ID = "devine-le-joueur";
 const MAX_ATTEMPTS = 6;
+
+function todayDateString(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 interface GameProps {
   target: NormalizedPlayer;
@@ -37,12 +42,29 @@ export default function Game({ target }: GameProps) {
     fetch("/data/players.json")
       .then((res) => res.json())
       .then((data: NormalizedPlayer[]) => {
-        if (!cancelled) setPool(data);
+        if (cancelled) return;
+        setPool(data);
+
+        const today = todayDateString();
+        const saved = getDailyProgress(GAME_ID, today);
+        if (!saved) return;
+
+        const restoredAttempts: Attempt[] = saved.guessedPlayerIds
+          .map((id) => data.find((p) => p.id === id))
+          .filter((p): p is NormalizedPlayer => p !== undefined)
+          .map((player) => ({ player, feedback: compareGuess(player, target, new Date()) }));
+        setAttempts(restoredAttempts);
+
+        if (restoredAttempts.some((a) => isWinningGuess(a.player, target))) {
+          setStatus("won");
+        } else if (restoredAttempts.length >= MAX_ATTEMPTS) {
+          setStatus("lost");
+        }
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [target]);
 
   function handleGuess(playerId: number) {
     if (!pool || status !== "playing") return;
@@ -52,6 +74,7 @@ export default function Game({ target }: GameProps) {
     const feedback = compareGuess(guessedPlayer, target, new Date());
     const nextAttempts = [...attempts, { player: guessedPlayer, feedback }];
     setAttempts(nextAttempts);
+    saveDailyProgress(GAME_ID, todayDateString(), nextAttempts.map((a) => a.player.id));
 
     if (isWinningGuess(guessedPlayer, target)) {
       setStatus("won");
