@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { teamLogoUrl } from "../lib/team-logo";
+import TeamLogo from "./TeamLogo";
 import "../styles/components/guess-input.scss";
 
 export interface GuessOption {
@@ -79,7 +79,7 @@ export default function GuessInput({
                 className="guess-input__suggestion"
                 onClick={() => selectOption(option)}
               >
-                <img className="guess-input__suggestion-logo" src={teamLogoUrl(option.team)} alt="" />
+                <TeamLogo team={option.team} className="guess-input__suggestion-logo" />
                 {option.label}
               </button>
             </li>
