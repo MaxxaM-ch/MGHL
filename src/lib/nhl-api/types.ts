@@ -11,6 +11,7 @@ export interface RawRosterPlayer {
 }
 
 export interface RawPlayerLanding {
+  heroImage: string;
   draftDetails?: {
     year: number;
     round: number;
@@ -30,4 +31,5 @@ export interface NormalizedPlayer {
   heightCm: number;
   draftYear: number | null;
   headshotUrl: string;
+  heroImageUrl: string;
 }

@@ -26,6 +26,7 @@ function makePlayer(overrides: Partial<NormalizedPlayer>): NormalizedPlayer {
     heightCm: 185,
     draftYear: 2015,
     headshotUrl: "https://example.com/photo.png",
+    heroImageUrl: "https://example.com/hero.jpg",
     ...overrides,
   };
 }

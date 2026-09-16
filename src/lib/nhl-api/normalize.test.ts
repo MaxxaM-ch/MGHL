@@ -25,6 +25,7 @@ describe("normalizePlayer", () => {
       heightCm: 185,
       draftYear: 2015,
       headshotUrl: "https://assets.nhle.com/mugs/nhl/20262027/EDM/8478402.png",
+      heroImageUrl: "https://assets.nhle.com/mugs/actionshots/1296x729/8478402.jpg",
     });
   });
 

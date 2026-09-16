@@ -93,7 +93,7 @@ export default function Game({ target }: GameProps) {
 
   return (
     <div className="devine-le-joueur">
-      <ProgressiveReveal src={target.headshotUrl} alt="Joueur mystère" blurPx={blurPx} />
+      <ProgressiveReveal player={target} blurPx={blurPx} revealed={status !== "playing"} />
 
       {status === "playing" &&
         (pool ? (

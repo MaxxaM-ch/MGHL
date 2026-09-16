@@ -19,5 +19,6 @@ export function normalizePlayer(params: {
     heightCm: roster.heightInCentimeters,
     draftYear: landing.draftDetails?.year ?? null,
     headshotUrl: roster.headshot,
+    heroImageUrl: landing.heroImage,
   };
 }
