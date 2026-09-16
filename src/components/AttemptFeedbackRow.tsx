@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { NormalizedPlayer } from "../lib/nhl-api/types";
 import { calculateAge, type AttributeComparison, type GuessFeedback } from "../games/devine-le-joueur/logic";
 import TeamLogo from "./TeamLogo";
-import { nationalityToFlag } from "../lib/country-flags";
+import { countryFlagUrl } from "../lib/country-flags";
 import "../styles/components/feedback-grid.scss";
 
 interface AttemptFeedbackRowProps {
@@ -14,10 +14,28 @@ const ATTRIBUTE_CELLS: {
   key: keyof GuessFeedback;
   label: string;
   render: (player: NormalizedPlayer) => ReactNode;
+  hideExactSymbol?: boolean;
 }[] = [
-  { key: "team", label: "Équipe", render: (p) => <TeamLogo team={p.team} className="feedback-grid__logo" alt={p.team} /> },
-  { key: "position", label: "Poste", render: (p) => p.position },
-  { key: "nationality", label: "Nat.", render: (p) => <span aria-label={p.nationality}>{nationalityToFlag(p.nationality)}</span> },
+  {
+    key: "team",
+    label: "Équipe",
+    render: (p) => <TeamLogo team={p.team} className="feedback-grid__logo" alt={p.team} />,
+    hideExactSymbol: true,
+  },
+  { key: "position", label: "Poste", render: (p) => p.position, hideExactSymbol: true },
+  {
+    key: "nationality",
+    label: "Nat.",
+    render: (p) => {
+      const flagUrl = countryFlagUrl(p.nationality);
+      return flagUrl ? (
+        <img className="feedback-grid__flag" src={flagUrl} alt={p.nationality} />
+      ) : (
+        p.nationality
+      );
+    },
+    hideExactSymbol: true,
+  },
   { key: "jerseyNumber", label: "N°", render: (p) => (p.jerseyNumber === null ? "Sans numéro" : `#${p.jerseyNumber}`) },
   { key: "age", label: "Âge", render: (p) => String(calculateAge(p.birthDate, new Date())) },
   { key: "heightCm", label: "Taille", render: (p) => `${p.heightCm} cm` },
@@ -56,12 +74,13 @@ export default function AttemptFeedbackRow({ player, feedback }: AttemptFeedback
       <span className="feedback-grid__cell feedback-grid__cell--name">
         {player.firstName} {player.lastName}
       </span>
-      {ATTRIBUTE_CELLS.map(({ key, render }) => {
-        const symbol = symbolFor(feedback[key]);
+      {ATTRIBUTE_CELLS.map(({ key, render, hideExactSymbol }) => {
+        const comparison = feedback[key];
+        const symbol = hideExactSymbol && comparison.type === "exact" ? null : symbolFor(comparison);
         return (
           <span
             key={key}
-            className={`feedback-grid__cell feedback-grid__cell--${feedback[key].type}`}
+            className={`feedback-grid__cell feedback-grid__cell--${comparison.type}`}
           >
             <span className="feedback-grid__value">{render(player)}</span>
             {symbol && <span className="feedback-grid__symbol">{symbol}</span>}
