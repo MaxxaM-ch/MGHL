@@ -86,7 +86,7 @@ export default function Game({ target }: GameProps) {
   }
 
   const options: GuessOption[] = pool
-    ? pool.map((p) => ({ id: p.id, label: playerLabel(p) }))
+    ? pool.map((p) => ({ id: p.id, label: playerLabel(p), team: p.team }))
     : [];
 
   const blurPx = status === "playing" ? getBlurLevel(attempts.length, MAX_ATTEMPTS) : 0;
@@ -94,6 +94,17 @@ export default function Game({ target }: GameProps) {
   return (
     <div className="devine-le-joueur">
       <ProgressiveReveal src={target.headshotUrl} alt="Joueur mystère" blurPx={blurPx} />
+
+      {status === "playing" &&
+        (pool ? (
+          <GuessInput
+            options={options}
+            onSubmit={handleGuess}
+            placeholder={`Tentative ${attempts.length + 1} / ${MAX_ATTEMPTS}`}
+          />
+        ) : (
+          <p>Chargement des joueurs…</p>
+        ))}
 
       {attempts.length > 0 && (
         <div className="feedback-grid">
@@ -103,13 +114,6 @@ export default function Game({ target }: GameProps) {
           ))}
         </div>
       )}
-
-      {status === "playing" &&
-        (pool ? (
-          <GuessInput options={options} onSubmit={handleGuess} />
-        ) : (
-          <p>Chargement des joueurs…</p>
-        ))}
 
       {status !== "playing" && (
         <div className="result-panel">

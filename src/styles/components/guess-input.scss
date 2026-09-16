@@ -60,7 +60,9 @@
 }
 
 .guess-input__suggestion {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   width: 100%;
   padding: 0.5rem 0.6rem;
   border: none;
@@ -71,6 +73,13 @@
   font-size: 0.9rem;
   text-align: left;
   cursor: pointer;
+}
+
+.guess-input__suggestion-logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .guess-input__suggestion:hover {

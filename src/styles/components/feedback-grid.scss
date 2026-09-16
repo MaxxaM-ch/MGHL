@@ -2,10 +2,11 @@
 
 .feedback-grid {
   display: grid;
-  grid-template-columns: minmax(100px, 1.4fr) repeat(7, minmax(58px, 1fr));
-  gap: 4px;
+  grid-template-columns: minmax(100px, 1.4fr) repeat(7, minmax(64px, 1fr));
+  gap: 6px;
   margin: 0 0 1.5rem;
   overflow-x: auto;
+  perspective: 800px;
 }
 
 .feedback-grid__row {
@@ -17,12 +18,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  min-height: 48px;
-  padding: 0.35rem 0.2rem;
-  border-radius: 8px;
+  gap: 3px;
+  min-height: 60px;
+  padding: 0.5rem 0.3rem;
+  border-radius: 10px;
   font-family: $font-body;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   text-align: center;
   line-height: 1.15;
 }
@@ -33,7 +34,7 @@
   min-height: auto;
   padding-left: 0.3rem;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   text-align: left;
 }
 
@@ -43,8 +44,8 @@
   font-family: $font-display;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  font-size: 0.62rem;
-  opacity: 0.65;
+  font-size: 0.78rem;
+  opacity: 0.7;
 }
 
 .feedback-grid__value {
@@ -52,8 +53,20 @@
 }
 
 .feedback-grid__symbol {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   opacity: 0.8;
+}
+
+.feedback-grid__logo {
+  width: 30px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.feedback-grid__cell--higher,
+.feedback-grid__cell--lower {
+  flex-direction: row;
+  gap: 0.35rem;
 }
 
 .feedback-grid__cell--exact {
@@ -76,5 +89,32 @@
   .feedback-grid__cell--no-match {
     background: rgba(148, 163, 184, 0.18);
     color: #94a3b8;
+  }
+}
+
+@keyframes feedback-cell-flip {
+  from {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+.feedback-grid__row--attempt .feedback-grid__cell {
+  animation: feedback-cell-flip 0.35s ease backwards;
+}
+
+@for $i from 1 through 8 {
+  .feedback-grid__row--attempt .feedback-grid__cell:nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 0.08}s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback-grid__row--attempt .feedback-grid__cell {
+    animation: none;
   }
 }

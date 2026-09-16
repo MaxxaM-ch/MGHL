@@ -1,11 +1,11 @@
 @use "../variables" as *;
 
 .player-reveal {
-  width: min(100%, 320px);
+  width: min(45%, 160px);
   aspect-ratio: 1 / 1;
-  margin: 0 auto 1.5rem;
-  padding: 0.5rem;
-  border-radius: 16px;
+  margin: 0 auto 1.25rem;
+  padding: 0.4rem;
+  border-radius: 14px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   overflow: hidden;

@@ -1,20 +1,28 @@
 import { useMemo, useState } from "react";
+import { teamLogoUrl } from "../lib/team-logo";
 import "../styles/components/guess-input.scss";
 
 export interface GuessOption {
   id: number;
   label: string;
+  team: string;
 }
 
 interface GuessInputProps {
   options: GuessOption[];
   onSubmit: (id: number) => void;
   disabled?: boolean;
+  placeholder?: string;
 }
 
 const MAX_SUGGESTIONS = 8;
 
-export default function GuessInput({ options, onSubmit, disabled = false }: GuessInputProps) {
+export default function GuessInput({
+  options,
+  onSubmit,
+  disabled = false,
+  placeholder = "Nom du joueur",
+}: GuessInputProps) {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -44,7 +52,7 @@ export default function GuessInput({ options, onSubmit, disabled = false }: Gues
           className="guess-input__field"
           value={query}
           disabled={disabled}
-          placeholder="Nom du joueur"
+          placeholder={placeholder}
           onChange={(e) => {
             setQuery(e.target.value);
             setSelectedId(null);
@@ -71,6 +79,7 @@ export default function GuessInput({ options, onSubmit, disabled = false }: Gues
                 className="guess-input__suggestion"
                 onClick={() => selectOption(option)}
               >
+                <img className="guess-input__suggestion-logo" src={teamLogoUrl(option.team)} alt="" />
                 {option.label}
               </button>
             </li>
