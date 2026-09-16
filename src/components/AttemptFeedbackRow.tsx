@@ -38,7 +38,7 @@ const ATTRIBUTE_CELLS: {
   },
   { key: "jerseyNumber", label: "N°", render: (p) => (p.jerseyNumber === null ? "Sans numéro" : `#${p.jerseyNumber}`) },
   { key: "age", label: "Âge", render: (p) => String(calculateAge(p.birthDate, new Date())) },
-  { key: "heightCm", label: "Taille", render: (p) => `${p.heightCm} cm` },
+  { key: "heightCm", label: "Taille", render: (p) => `${p.heightCm} cm`, hideExactSymbol: true },
   { key: "draftYear", label: "Draft", render: (p) => (p.draftYear === null ? "Non drafté" : String(p.draftYear)) },
 ];
 
