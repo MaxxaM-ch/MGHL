@@ -80,17 +80,17 @@ function compareOrdinal(guessValue: number, targetValue: number): AttributeCompa
   return targetValue > guessValue ? { type: "higher" } : { type: "lower" };
 }
 
-function compareDraftYear(
-  guessDraftYear: number | null,
-  targetDraftYear: number | null,
+function compareNullableOrdinal(
+  guessValue: number | null,
+  targetValue: number | null,
 ): AttributeComparison {
-  if (guessDraftYear === null && targetDraftYear === null) {
+  if (guessValue === null && targetValue === null) {
     return { type: "exact" };
   }
-  if (guessDraftYear === null || targetDraftYear === null) {
+  if (guessValue === null || targetValue === null) {
     return { type: "no-match" };
   }
-  return compareOrdinal(guessDraftYear, targetDraftYear);
+  return compareOrdinal(guessValue, targetValue);
 }
 
 export function compareGuess(
@@ -102,12 +102,12 @@ export function compareGuess(
     team: compareCategorical(guess.team, target.team),
     position: compareCategorical(guess.position, target.position),
     nationality: compareCategorical(guess.nationality, target.nationality),
-    jerseyNumber: compareOrdinal(guess.jerseyNumber, target.jerseyNumber),
+    jerseyNumber: compareNullableOrdinal(guess.jerseyNumber, target.jerseyNumber),
     age: compareOrdinal(
       calculateAge(guess.birthDate, referenceDate),
       calculateAge(target.birthDate, referenceDate),
     ),
     heightCm: compareOrdinal(guess.heightCm, target.heightCm),
-    draftYear: compareDraftYear(guess.draftYear, target.draftYear),
+    draftYear: compareNullableOrdinal(guess.draftYear, target.draftYear),
   };
 }

@@ -15,7 +15,7 @@ const ATTRIBUTE_CELLS: {
   { key: "team", label: "Équipe", value: (p) => p.team },
   { key: "position", label: "Poste", value: (p) => p.position },
   { key: "nationality", label: "Nat.", value: (p) => p.nationality },
-  { key: "jerseyNumber", label: "N°", value: (p) => `#${p.jerseyNumber}` },
+  { key: "jerseyNumber", label: "N°", value: (p) => (p.jerseyNumber === null ? "Sans numéro" : `#${p.jerseyNumber}`) },
   { key: "age", label: "Âge", value: (p) => String(calculateAge(p.birthDate, new Date())) },
   { key: "heightCm", label: "Taille", value: (p) => `${p.heightCm} cm` },
   { key: "draftYear", label: "Draft", value: (p) => (p.draftYear === null ? "Non drafté" : String(p.draftYear)) },

@@ -3,7 +3,7 @@ export interface RawRosterPlayer {
   headshot: string;
   firstName: { default: string };
   lastName: { default: string };
-  sweaterNumber: number;
+  sweaterNumber?: number;
   positionCode: string;
   heightInCentimeters: number;
   birthDate: string;
@@ -24,7 +24,7 @@ export interface NormalizedPlayer {
   lastName: string;
   team: string;
   position: string;
-  jerseyNumber: number;
+  jerseyNumber: number | null;
   nationality: string;
   birthDate: string;
   heightCm: number;

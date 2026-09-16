@@ -76,6 +76,20 @@ describe("compareGuess", () => {
     expect(compareGuess(guess, target, referenceDate).jerseyNumber).toEqual({ type: "exact" });
   });
 
+  it("marks jersey number as exact when neither player has one", () => {
+    const target = makePlayer({ jerseyNumber: null });
+    const guess = makePlayer({ jerseyNumber: null });
+
+    expect(compareGuess(guess, target, referenceDate).jerseyNumber).toEqual({ type: "exact" });
+  });
+
+  it("marks jersey number as no-match when only one player has one", () => {
+    const target = makePlayer({ jerseyNumber: null });
+    const guess = makePlayer({ jerseyNumber: 97 });
+
+    expect(compareGuess(guess, target, referenceDate).jerseyNumber).toEqual({ type: "no-match" });
+  });
+
   it("compares age using the older/younger direction of the target", () => {
     const target = makePlayer({ birthDate: "1990-01-01" }); // older
     const guess = makePlayer({ birthDate: "2000-01-01" }); // younger
