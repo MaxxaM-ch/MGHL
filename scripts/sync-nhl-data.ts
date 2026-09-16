@@ -11,19 +11,44 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// The NHL CDN never 404s for a missing headshot: it silently serves a generic
+// placeholder silhouette instead. Detect it by content-length instead of status.
+const PLACEHOLDER_PHOTO_URL = "https://assets.nhle.com/mugs/nhl/20262027/ANA/1.png";
+
+async function getContentLength(url: string): Promise<number | null> {
+  try {
+    const res = await fetch(url, { method: "HEAD" });
+    if (!res.ok) return null;
+    const length = res.headers.get("content-length");
+    return length ? Number(length) : null;
+  } catch {
+    return null;
+  }
+}
+
 async function main() {
+  const placeholderSize = await getContentLength(PLACEHOLDER_PHOTO_URL);
   const teams = await fetchAllTeamAbbreviations();
   const players: NormalizedPlayer[] = [];
+  let skippedWithoutPhoto = 0;
 
   for (const team of teams) {
     const roster = await fetchTeamRoster(team);
     for (const rosterPlayer of roster) {
       const landing = await fetchPlayerLanding(rosterPlayer.id);
-      players.push(normalizePlayer({ roster: rosterPlayer, landing, team }));
+      const player = normalizePlayer({ roster: rosterPlayer, landing, team });
+      const photoSize = await getContentLength(player.headshotUrl);
+      if (photoSize !== null && photoSize !== placeholderSize) {
+        players.push(player);
+      } else {
+        skippedWithoutPhoto += 1;
+      }
       await sleep(400);
     }
     console.log(`Synced ${team}: ${roster.length} players`);
   }
+
+  console.log(`Skipped ${skippedWithoutPhoto} players without a photo.`);
 
   mkdirSync("src/data/generated", { recursive: true });
   writeFileSync("src/data/generated/players.json", JSON.stringify(players, null, 2));
