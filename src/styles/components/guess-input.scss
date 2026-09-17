@@ -1,4 +1,5 @@
 @use "../variables" as *;
+@use "../buttons" as *;
 
 .guess-input {
   position: relative;
@@ -27,14 +28,7 @@
 }
 
 .guess-input__submit {
-  padding: 0.65rem 1.1rem;
-  border-radius: 8px;
-  border: none;
-  background: var(--accent);
-  color: $bg-light;
-  font-family: $font-body;
-  font-weight: 700;
-  cursor: pointer;
+  @include btn-accent;
 }
 
 .guess-input__submit:disabled {
