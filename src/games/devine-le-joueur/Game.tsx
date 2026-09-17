@@ -117,7 +117,7 @@ export default function Game({ target }: GameProps) {
       {attempts.length > 0 && (
         <div className="feedback-grid">
           <FeedbackGridHeader />
-          {attempts.map((attempt) => (
+          {[...attempts].reverse().map((attempt) => (
             <AttemptFeedbackRow key={attempt.player.id} player={attempt.player} feedback={attempt.feedback} />
           ))}
         </div>
