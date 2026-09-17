@@ -11,17 +11,55 @@
   text-align: center;
 }
 
-.game-layout__back {
+.game-layout__logo-link {
   display: inline-block;
-  font-family: $font-body;
-  font-size: 0.9rem;
-  opacity: 0.7;
-  text-decoration: none;
   margin-bottom: 1rem;
 }
 
-.game-layout__back:hover {
-  opacity: 1;
+.game-layout__logo {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+.game-layout__logo--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .game-layout__logo--light {
+    display: none;
+  }
+
+  .game-layout__logo--dark {
+    display: block;
+  }
+}
+
+.game-layout__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.game-layout__heading {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .game-layout__row {
+    flex-wrap: wrap;
+    row-gap: 1rem;
+  }
+
+  .game-layout__heading {
+    order: -1;
+    flex-basis: 100%;
+  }
 }
 
 .game-layout__title {
@@ -42,4 +80,112 @@
 .game-layout__content {
   max-width: $content-width;
   margin: 0 auto;
+}
+
+.game-layout__how-to-play {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  color: var(--text);
+  text-decoration: underline;
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.game-layout__how-to-play:hover {
+  opacity: 1;
+}
+
+.game-layout__quit {
+  flex-shrink: 0;
+  display: inline-block;
+  padding: 0.65rem 1.1rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: $bg-light;
+  font-family: $font-body;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.how-to-play-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(10, 16, 32, 0.55);
+  animation: how-to-play-modal-fade-in 0.2s ease;
+}
+
+.how-to-play-modal-backdrop[hidden] {
+  display: none;
+}
+
+@keyframes how-to-play-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.how-to-play-modal {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 2rem 1.5rem 1.5rem;
+  border-radius: 16px;
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
+}
+
+.how-to-play-modal__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.how-to-play-modal__title {
+  margin: 0 0 1rem;
+  font-family: $font-display;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.how-to-play-modal__body {
+  font-family: $font-body;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.how-to-play-modal__body p {
+  margin: 0 0 0.75rem;
+}
+
+.how-to-play-modal__body ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
 }
