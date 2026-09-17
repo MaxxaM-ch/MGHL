@@ -82,6 +82,7 @@
   flex-shrink: 0;
 }
 
-.guess-input__suggestion:hover {
+.guess-input__suggestion:hover,
+.guess-input__suggestion--highlighted {
   background: var(--card-bg);
 }
