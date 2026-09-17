@@ -10,11 +10,7 @@ interface TeamLogoProps {
 
 export default function TeamLogo({ team, className = "", alt = "", forceDark = false }: TeamLogoProps) {
   if (forceDark) {
-    return (
-      <span className="team-logo-badge team-logo-badge--forced">
-        <img className={`team-logo ${className}`} src={teamLogoUrl(team, "dark")} alt={alt} />
-      </span>
-    );
+    return <img className={`team-logo ${className}`} src={teamLogoUrl(team, "dark")} alt={alt} />;
   }
 
   return (
