@@ -12,6 +12,7 @@ import "../../styles/games/devine-le-joueur.scss";
 
 const GAME_ID = "devine-le-joueur";
 const MAX_ATTEMPTS = 6;
+const REVEAL_DELAY_MS = 950;
 
 function todayDateString(): string {
   return new Date().toISOString().slice(0, 10);
@@ -36,6 +37,13 @@ export default function Game({ target }: GameProps) {
   const [pool, setPool] = useState<NormalizedPlayer[] | null>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [status, setStatus] = useState<Status>("playing");
+  const [revealReady, setRevealReady] = useState(false);
+
+  useEffect(() => {
+    if (status === "playing") return;
+    const timer = setTimeout(() => setRevealReady(true), REVEAL_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [status]);
 
   useEffect(() => {
     let cancelled = false;
@@ -93,7 +101,7 @@ export default function Game({ target }: GameProps) {
 
   return (
     <div className="devine-le-joueur">
-      <ProgressiveReveal player={target} blurPx={blurPx} revealed={status !== "playing"} />
+      <ProgressiveReveal player={target} blurPx={blurPx} revealed={revealReady} />
 
       {status === "playing" &&
         (pool ? (
@@ -115,7 +123,7 @@ export default function Game({ target }: GameProps) {
         </div>
       )}
 
-      {status !== "playing" && (
+      {revealReady && (
         <div className="result-panel">
           <p className="result-panel__message">
             {status === "won"
