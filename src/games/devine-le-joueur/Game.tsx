@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import AttemptFeedbackRow, { FeedbackGridHeader } from "../../components/AttemptFeedbackRow";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
 import ProgressiveReveal from "../../components/ProgressiveReveal";
-import ShareResult from "../../components/ShareResult";
-import StreakBadge from "../../components/StreakBadge";
+import ResultModal from "../../components/ResultModal";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
@@ -13,6 +12,9 @@ import "../../styles/games/devine-le-joueur.scss";
 const GAME_ID = "devine-le-joueur";
 const MAX_ATTEMPTS = 6;
 const REVEAL_DELAY_MS = 950;
+// Matches the reveal banner's own CSS transition duration (progressive-reveal.scss).
+const BANNER_ANIMATION_MS = 650;
+const MODAL_DELAY_AFTER_REVEAL_MS = 1000;
 
 function todayDateString(): string {
   return new Date().toISOString().slice(0, 10);
@@ -38,12 +40,20 @@ export default function Game({ target }: GameProps) {
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [status, setStatus] = useState<Status>("playing");
   const [revealReady, setRevealReady] = useState(false);
+  const [modalReady, setModalReady] = useState(false);
+  const [resultModalDismissed, setResultModalDismissed] = useState(false);
 
   useEffect(() => {
     if (status === "playing") return;
     const timer = setTimeout(() => setRevealReady(true), REVEAL_DELAY_MS);
     return () => clearTimeout(timer);
   }, [status]);
+
+  useEffect(() => {
+    if (!revealReady) return;
+    const timer = setTimeout(() => setModalReady(true), BANNER_ANIMATION_MS + MODAL_DELAY_AFTER_REVEAL_MS);
+    return () => clearTimeout(timer);
+  }, [revealReady]);
 
   useEffect(() => {
     let cancelled = false;
@@ -123,21 +133,19 @@ export default function Game({ target }: GameProps) {
         </div>
       )}
 
-      {revealReady && (
-        <div className="result-panel">
-          <p className="result-panel__message">
-            {status === "won"
+      {modalReady && !resultModalDismissed && (
+        <ResultModal
+          won={status === "won"}
+          message={
+            status === "won"
               ? `Trouvé en ${attempts.length} tentative${attempts.length > 1 ? "s" : ""} !`
-              : `Perdu ! Le joueur était ${playerLabel(target)}.`}
-          </p>
-          <ShareResult
-            gameTitle="Devine le joueur"
-            attempts={attempts.map((a) => a.feedback)}
-            won={status === "won"}
-            maxAttempts={MAX_ATTEMPTS}
-          />
-          <StreakBadge gameId={GAME_ID} />
-        </div>
+              : `Perdu ! Le joueur était ${playerLabel(target)}.`
+          }
+          attempts={attempts.map((a) => a.feedback)}
+          maxAttempts={MAX_ATTEMPTS}
+          gameId={GAME_ID}
+          onClose={() => setResultModalDismissed(true)}
+        />
       )}
     </div>
   );
