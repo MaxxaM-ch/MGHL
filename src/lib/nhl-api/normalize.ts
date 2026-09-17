@@ -13,7 +13,7 @@ export function normalizePlayer(params: {
     lastName: roster.lastName.default,
     team,
     position: roster.positionCode,
-    jerseyNumber: roster.sweaterNumber ?? null,
+    jerseyNumber: roster.sweaterNumber ?? landing.sweaterNumber ?? null,
     nationality: roster.birthCountry,
     birthDate: roster.birthDate,
     heightCm: roster.heightInCentimeters,

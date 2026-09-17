@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { normalizePlayer } from "./normalize";
-import type { RawRosterPlayer } from "./types";
+import type { RawPlayerLanding, RawRosterPlayer } from "./types";
 import rosterPlayer from "./__fixtures__/roster-player.json";
 import landingDrafted from "./__fixtures__/player-landing-drafted.json";
 import landingUndrafted from "./__fixtures__/player-landing-undrafted.json";
@@ -39,16 +39,32 @@ describe("normalizePlayer", () => {
     expect(result.draftYear).toBeNull();
   });
 
-  it("returns a null jersey number when the roster data omits it", () => {
+  it("returns a null jersey number when neither roster nor landing has it", () => {
     const rosterWithoutNumber: RawRosterPlayer = { ...rosterPlayer };
     delete rosterWithoutNumber.sweaterNumber;
+    const landingWithoutNumber: RawPlayerLanding = { ...landingDrafted };
+    delete landingWithoutNumber.sweaterNumber;
 
     const result = normalizePlayer({
       roster: rosterWithoutNumber,
-      landing: landingDrafted,
+      landing: landingWithoutNumber,
       team: "EDM",
     });
 
     expect(result.jerseyNumber).toBeNull();
+  });
+
+  it("falls back to the landing sweater number when the roster omits it", () => {
+    const rosterWithoutNumber: RawRosterPlayer = { ...rosterPlayer };
+    delete rosterWithoutNumber.sweaterNumber;
+    const landingWithNumber = { ...landingDrafted, sweaterNumber: 71 };
+
+    const result = normalizePlayer({
+      roster: rosterWithoutNumber,
+      landing: landingWithNumber,
+      team: "EDM",
+    });
+
+    expect(result.jerseyNumber).toBe(71);
   });
 });

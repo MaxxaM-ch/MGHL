@@ -12,6 +12,7 @@ export interface RawRosterPlayer {
 
 export interface RawPlayerLanding {
   heroImage: string;
+  sweaterNumber?: number;
   draftDetails?: {
     year: number;
     round: number;
