@@ -14,15 +14,13 @@ const ATTRIBUTE_CELLS: {
   key: keyof GuessFeedback;
   label: string;
   render: (player: NormalizedPlayer) => ReactNode;
-  hideExactSymbol?: boolean;
 }[] = [
   {
     key: "team",
     label: "Équipe",
     render: (p) => <TeamLogo team={p.team} className="feedback-grid__logo" alt={p.team} />,
-    hideExactSymbol: true,
   },
-  { key: "position", label: "Poste", render: (p) => p.position, hideExactSymbol: true },
+  { key: "position", label: "Poste", render: (p) => p.position },
   {
     key: "nationality",
     label: "Nat.",
@@ -34,22 +32,20 @@ const ATTRIBUTE_CELLS: {
         p.nationality
       );
     },
-    hideExactSymbol: true,
   },
   { key: "jerseyNumber", label: "N°", render: (p) => (p.jerseyNumber === null ? "Sans numéro" : `#${p.jerseyNumber}`) },
   { key: "age", label: "Âge", render: (p) => String(calculateAge(p.birthDate, new Date())) },
-  { key: "heightCm", label: "Taille", render: (p) => `${p.heightCm} cm`, hideExactSymbol: true },
+  { key: "heightCm", label: "Taille", render: (p) => `${p.heightCm} cm` },
   { key: "draftYear", label: "Draft", render: (p) => (p.draftYear === null ? "Non drafté" : String(p.draftYear)) },
 ];
 
 function symbolFor(comparison: AttributeComparison): string | null {
   switch (comparison.type) {
-    case "exact":
-      return "✔";
     case "higher":
       return "↑";
     case "lower":
       return "↓";
+    case "exact":
     case "no-match":
       return null;
   }
@@ -74,9 +70,9 @@ export default function AttemptFeedbackRow({ player, feedback }: AttemptFeedback
       <span className="feedback-grid__cell feedback-grid__cell--name">
         {player.firstName} {player.lastName}
       </span>
-      {ATTRIBUTE_CELLS.map(({ key, render, hideExactSymbol }) => {
+      {ATTRIBUTE_CELLS.map(({ key, render }) => {
         const comparison = feedback[key];
-        const symbol = hideExactSymbol && comparison.type === "exact" ? null : symbolFor(comparison);
+        const symbol = symbolFor(comparison);
         return (
           <span
             key={key}
