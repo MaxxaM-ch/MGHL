@@ -48,6 +48,18 @@ export function isWinningGuess(guess: NormalizedPlayer, target: NormalizedPlayer
   return guess.id === target.id;
 }
 
+export type Status = "playing" | "won" | "lost";
+
+export function deriveStatus(
+  guessedPlayers: NormalizedPlayer[],
+  target: NormalizedPlayer,
+  maxAttempts: number,
+): Status {
+  if (guessedPlayers.some((player) => isWinningGuess(player, target))) return "won";
+  if (guessedPlayers.length >= maxAttempts) return "lost";
+  return "playing";
+}
+
 const MAX_BLUR_PX = 24;
 
 export function getBlurLevel(attemptNumber: number, maxAttempts: number): number {

@@ -13,6 +13,8 @@ export function normalizePlayer(params: {
     lastName: roster.lastName.default,
     team,
     position: roster.positionCode,
+    // The roster endpoint's sweaterNumber is sometimes missing (e.g. recent
+    // call-ups); fall back to the player-landing endpoint, which is more complete.
     jerseyNumber: roster.sweaterNumber ?? landing.sweaterNumber ?? null,
     nationality: roster.birthCountry,
     birthDate: roster.birthDate,

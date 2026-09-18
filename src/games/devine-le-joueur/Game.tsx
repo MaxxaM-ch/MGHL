@@ -1,24 +1,23 @@
 import { useEffect, useState } from "react";
-import AttemptFeedbackRow, { FeedbackGridHeader } from "../../components/AttemptFeedbackRow";
+import AttemptFeedbackRow, { FeedbackGridHeader } from "./components/AttemptFeedbackRow";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
-import ProgressiveReveal from "../../components/ProgressiveReveal";
-import ResultModal from "../../components/ResultModal";
+import ProgressiveReveal from "./components/ProgressiveReveal";
+import ResultModal from "./components/ResultModal";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
+import { formatDateKey } from "../../lib/daily-puzzle/seed";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
-import { compareGuess, getBlurLevel, isWinningGuess, type GuessFeedback } from "./logic";
+import { compareGuess, deriveStatus, getBlurLevel, type GuessFeedback, type Status } from "./logic";
 import "../../styles/games/devine-le-joueur.scss";
 
 const GAME_ID = "devine-le-joueur";
 const MAX_ATTEMPTS = 6;
+// Lets the newest feedback row's cell-flip animation finish before the big
+// reveal starts (see feedback-grid.scss: 8 cells x 0.08s stagger + 0.35s ~= 910ms).
 const REVEAL_DELAY_MS = 950;
 // Matches the reveal banner's own CSS transition duration (progressive-reveal.scss).
 const BANNER_ANIMATION_MS = 650;
 const MODAL_DELAY_AFTER_REVEAL_MS = 1000;
-
-function todayDateString(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 interface GameProps {
   target: NormalizedPlayer;
@@ -28,8 +27,6 @@ interface Attempt {
   player: NormalizedPlayer;
   feedback: GuessFeedback;
 }
-
-type Status = "playing" | "won" | "lost";
 
 function playerLabel(player: NormalizedPlayer): string {
   return `${player.firstName} ${player.lastName}`;
@@ -45,15 +42,18 @@ export default function Game({ target }: GameProps) {
 
   useEffect(() => {
     if (status === "playing") return;
-    const timer = setTimeout(() => setRevealReady(true), REVEAL_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [status]);
 
-  useEffect(() => {
-    if (!revealReady) return;
-    const timer = setTimeout(() => setModalReady(true), BANNER_ANIMATION_MS + MODAL_DELAY_AFTER_REVEAL_MS);
-    return () => clearTimeout(timer);
-  }, [revealReady]);
+    let modalTimer: ReturnType<typeof setTimeout> | undefined;
+    const revealTimer = setTimeout(() => {
+      setRevealReady(true);
+      modalTimer = setTimeout(() => setModalReady(true), BANNER_ANIMATION_MS + MODAL_DELAY_AFTER_REVEAL_MS);
+    }, REVEAL_DELAY_MS);
+
+    return () => {
+      clearTimeout(revealTimer);
+      clearTimeout(modalTimer);
+    };
+  }, [status]);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,7 +63,7 @@ export default function Game({ target }: GameProps) {
         if (cancelled) return;
         setPool(data);
 
-        const today = todayDateString();
+        const today = formatDateKey(new Date());
         const saved = getDailyProgress(GAME_ID, today);
         if (!saved) return;
 
@@ -72,12 +72,7 @@ export default function Game({ target }: GameProps) {
           .filter((p): p is NormalizedPlayer => p !== undefined)
           .map((player) => ({ player, feedback: compareGuess(player, target, new Date()) }));
         setAttempts(restoredAttempts);
-
-        if (restoredAttempts.some((a) => isWinningGuess(a.player, target))) {
-          setStatus("won");
-        } else if (restoredAttempts.length >= MAX_ATTEMPTS) {
-          setStatus("lost");
-        }
+        setStatus(deriveStatus(restoredAttempts.map((a) => a.player), target, MAX_ATTEMPTS));
       });
     return () => {
       cancelled = true;
@@ -92,14 +87,16 @@ export default function Game({ target }: GameProps) {
     const feedback = compareGuess(guessedPlayer, target, new Date());
     const nextAttempts = [...attempts, { player: guessedPlayer, feedback }];
     setAttempts(nextAttempts);
-    saveDailyProgress(GAME_ID, todayDateString(), nextAttempts.map((a) => a.player.id));
+    saveDailyProgress(
+      GAME_ID,
+      formatDateKey(new Date()),
+      nextAttempts.map((a) => a.player.id),
+    );
 
-    if (isWinningGuess(guessedPlayer, target)) {
-      setStatus("won");
-      recordResult(GAME_ID, true);
-    } else if (nextAttempts.length >= MAX_ATTEMPTS) {
-      setStatus("lost");
-      recordResult(GAME_ID, false);
+    const nextStatus = deriveStatus(nextAttempts.map((a) => a.player), target, MAX_ATTEMPTS);
+    setStatus(nextStatus);
+    if (nextStatus !== "playing") {
+      recordResult(GAME_ID, nextStatus === "won");
     }
   }
 

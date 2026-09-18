@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { buildShareGrid, type GuessFeedback } from "../games/devine-le-joueur/logic";
-import "../styles/components/share-result.scss";
+import { buildShareGrid, type GuessFeedback } from "../logic";
+import "../../../styles/components/share-result.scss";
 
 interface ShareResultProps {
   gameTitle: string;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pickDailyItem } from "./seed";
+import { formatDateKey, pickDailyItem } from "./seed";
 
 describe("pickDailyItem", () => {
   it("returns the same item for the same date across multiple calls", () => {
@@ -34,5 +34,15 @@ describe("pickDailyItem", () => {
 
   it("throws when given an empty list", () => {
     expect(() => pickDailyItem([], new Date("2026-09-15T00:00:00Z"))).toThrow();
+  });
+});
+
+describe("formatDateKey", () => {
+  it("formats a date as its UTC calendar day", () => {
+    expect(formatDateKey(new Date("2026-09-15T23:59:00Z"))).toBe("2026-09-15");
+  });
+
+  it("does not shift across a UTC day boundary", () => {
+    expect(formatDateKey(new Date("2026-01-01T00:00:00Z"))).toBe("2026-01-01");
   });
 });

@@ -4,7 +4,7 @@ const BASE_URL = "https://api-web.nhle.com/v1";
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 500;
 
-function sleep(ms: number): Promise<void> {
+export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 

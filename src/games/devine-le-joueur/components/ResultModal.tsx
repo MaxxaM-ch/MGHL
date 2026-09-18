@@ -1,8 +1,8 @@
 import ShareResult from "./ShareResult";
-import StreakBadge from "./StreakBadge";
-import CountdownTimer from "./CountdownTimer";
-import type { GuessFeedback } from "../games/devine-le-joueur/logic";
-import "../styles/components/result-modal.scss";
+import StreakBadge from "../../../components/StreakBadge";
+import CountdownTimer from "../../../components/CountdownTimer";
+import type { GuessFeedback } from "../logic";
+import "../../../styles/components/result-modal.scss";
 
 interface ResultModalProps {
   won: boolean;

@@ -1,42 +1,19 @@
 @use "../variables" as *;
+@use "../modal" as *;
 
 .result-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background: rgba(10, 16, 32, 0.55);
-  animation: result-modal-fade-in 0.2s ease;
+  @include modal-backdrop;
 }
 
 .result-modal {
-  position: relative;
-  width: 100%;
+  @include modal-panel;
   max-width: 360px;
   padding: 2rem 1.5rem 1.5rem;
-  border-radius: 16px;
-  background: var(--bg);
-  border: 1px solid var(--card-border);
   text-align: center;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
 }
 
 .result-modal__close {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: var(--card-bg);
-  color: var(--text);
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
+  @include modal-close-button;
 }
 
 .result-modal__message {
@@ -45,13 +22,4 @@
   font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-}
-
-@keyframes result-modal-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }

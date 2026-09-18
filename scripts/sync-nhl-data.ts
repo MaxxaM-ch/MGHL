@@ -3,13 +3,10 @@ import {
   fetchAllTeamAbbreviations,
   fetchPlayerLanding,
   fetchTeamRoster,
+  sleep,
 } from "../src/lib/nhl-api/client.ts";
 import { normalizePlayer } from "../src/lib/nhl-api/normalize.ts";
 import type { NormalizedPlayer } from "../src/lib/nhl-api/types.ts";
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 // The NHL CDN never 404s for a missing headshot: it silently serves a generic
 // placeholder silhouette instead. Detect it by content-length instead of status.

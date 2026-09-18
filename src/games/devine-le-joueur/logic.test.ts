@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildShareGrid, calculateAge, compareGuess, getBlurLevel, isWinningGuess } from "./logic";
+import { buildShareGrid, calculateAge, compareGuess, deriveStatus, getBlurLevel, isWinningGuess } from "./logic";
 import type { GuessFeedback } from "./logic";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
 
@@ -173,6 +173,50 @@ describe("buildShareGrid", () => {
     const result = buildShareGrid([mixedRow, exactRow]);
 
     expect(result).toBe("⬛🟨🟨🟩⬛🟨🟨\n🟩🟩🟩🟩🟩🟩🟩");
+  });
+});
+
+describe("deriveStatus", () => {
+  it("is playing when no guess has won and attempts remain", () => {
+    const target = makePlayer({ id: 1 });
+    const guesses = [makePlayer({ id: 2 }), makePlayer({ id: 3 })];
+
+    expect(deriveStatus(guesses, target, 6)).toBe("playing");
+  });
+
+  it("is won when one of the guesses matches the target", () => {
+    const target = makePlayer({ id: 1 });
+    const guesses = [makePlayer({ id: 2 }), makePlayer({ id: 1 })];
+
+    expect(deriveStatus(guesses, target, 6)).toBe("won");
+  });
+
+  it("is lost when the attempt limit is reached without a match", () => {
+    const target = makePlayer({ id: 1 });
+    const guesses = [
+      makePlayer({ id: 2 }),
+      makePlayer({ id: 3 }),
+      makePlayer({ id: 4 }),
+      makePlayer({ id: 5 }),
+      makePlayer({ id: 6 }),
+      makePlayer({ id: 7 }),
+    ];
+
+    expect(deriveStatus(guesses, target, 6)).toBe("lost");
+  });
+
+  it("prefers won over lost when the winning guess is also the last attempt", () => {
+    const target = makePlayer({ id: 1 });
+    const guesses = [
+      makePlayer({ id: 2 }),
+      makePlayer({ id: 3 }),
+      makePlayer({ id: 4 }),
+      makePlayer({ id: 5 }),
+      makePlayer({ id: 6 }),
+      makePlayer({ id: 1 }),
+    ];
+
+    expect(deriveStatus(guesses, target, 6)).toBe("won");
   });
 });
 
