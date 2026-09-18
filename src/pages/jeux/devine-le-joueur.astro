@@ -1,11 +1,6 @@
 ---
 import GameLayout from "../../layouts/GameLayout.astro";
 import Game from "../../games/devine-le-joueur/Game.tsx";
-import { pickDailyItem } from "../../lib/daily-puzzle/seed";
-import players from "../../data/generated/players.json";
-import type { NormalizedPlayer } from "../../lib/nhl-api/types";
-
-const target = pickDailyItem(players as NormalizedPlayer[], new Date());
 ---
 
 <GameLayout
@@ -23,5 +18,5 @@ const target = pickDailyItem(players as NormalizedPlayer[], new Date());
     </ul>
     <p>La photo du joueur mystère se dévoile un peu plus à chaque tentative.</p>
   </Fragment>
-  <Game client:load target={target} />
+  <Game client:load />
 </GameLayout>

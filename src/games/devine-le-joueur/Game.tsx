@@ -5,7 +5,7 @@ import ProgressiveReveal from "./components/ProgressiveReveal";
 import ResultModal from "./components/ResultModal";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
-import { formatDateKey } from "../../lib/daily-puzzle/seed";
+import { formatDateKey, pickDailyItem } from "../../lib/daily-puzzle/seed";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
 import { compareGuess, deriveStatus, getBlurLevel, type GuessFeedback, type Status } from "./logic";
 import "../../styles/games/devine-le-joueur.scss";
@@ -19,10 +19,6 @@ const REVEAL_DELAY_MS = 950;
 const BANNER_ANIMATION_MS = 650;
 const MODAL_DELAY_AFTER_REVEAL_MS = 1000;
 
-interface GameProps {
-  target: NormalizedPlayer;
-}
-
 interface Attempt {
   player: NormalizedPlayer;
   feedback: GuessFeedback;
@@ -32,8 +28,9 @@ function playerLabel(player: NormalizedPlayer): string {
   return `${player.firstName} ${player.lastName}`;
 }
 
-export default function Game({ target }: GameProps) {
+export default function Game() {
   const [pool, setPool] = useState<NormalizedPlayer[] | null>(null);
+  const [target, setTarget] = useState<NormalizedPlayer | null>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [status, setStatus] = useState<Status>("playing");
   const [revealReady, setRevealReady] = useState(false);
@@ -63,6 +60,11 @@ export default function Game({ target }: GameProps) {
         if (cancelled) return;
         setPool(data);
 
+        // Picked client-side (never passed down from the server) so the
+        // answer never appears in the page's static HTML.
+        const dailyTarget = pickDailyItem(data, new Date());
+        setTarget(dailyTarget);
+
         const today = formatDateKey(new Date());
         const saved = getDailyProgress(GAME_ID, today);
         if (!saved) return;
@@ -70,17 +72,17 @@ export default function Game({ target }: GameProps) {
         const restoredAttempts: Attempt[] = saved.guessedPlayerIds
           .map((id) => data.find((p) => p.id === id))
           .filter((p): p is NormalizedPlayer => p !== undefined)
-          .map((player) => ({ player, feedback: compareGuess(player, target, new Date()) }));
+          .map((player) => ({ player, feedback: compareGuess(player, dailyTarget, new Date()) }));
         setAttempts(restoredAttempts);
-        setStatus(deriveStatus(restoredAttempts.map((a) => a.player), target, MAX_ATTEMPTS));
+        setStatus(deriveStatus(restoredAttempts.map((a) => a.player), dailyTarget, MAX_ATTEMPTS));
       });
     return () => {
       cancelled = true;
     };
-  }, [target]);
+  }, []);
 
   function handleGuess(playerId: number) {
-    if (!pool || status !== "playing") return;
+    if (!pool || !target || status !== "playing") return;
     const guessedPlayer = pool.find((p) => p.id === playerId);
     if (!guessedPlayer) return;
 
@@ -106,20 +108,21 @@ export default function Game({ target }: GameProps) {
 
   const blurPx = status === "playing" ? getBlurLevel(attempts.length, MAX_ATTEMPTS) : 0;
 
+  if (!pool || !target) {
+    return <p>Chargement des joueurs…</p>;
+  }
+
   return (
     <div className="devine-le-joueur">
       <ProgressiveReveal player={target} blurPx={blurPx} revealed={revealReady} />
 
-      {status === "playing" &&
-        (pool ? (
-          <GuessInput
-            options={options}
-            onSubmit={handleGuess}
-            placeholder={`Tentative ${attempts.length + 1} / ${MAX_ATTEMPTS}`}
-          />
-        ) : (
-          <p>Chargement des joueurs…</p>
-        ))}
+      {status === "playing" && (
+        <GuessInput
+          options={options}
+          onSubmit={handleGuess}
+          placeholder={`Tentative ${attempts.length + 1} / ${MAX_ATTEMPTS}`}
+        />
+      )}
 
       {attempts.length > 0 && (
         <div className="feedback-grid">
