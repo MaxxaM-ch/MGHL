@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import TeamLogo from "./TeamLogo";
-import "../styles/components/guess-input.scss";
+import "../styles/components/shared/guess-input.scss";
 
 export interface GuessOption {
   id: number;

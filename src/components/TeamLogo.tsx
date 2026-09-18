@@ -1,5 +1,5 @@
 import { teamLogoUrl } from "../lib/team-logo";
-import "../styles/components/team-logo.scss";
+import "../styles/components/shared/team-logo.scss";
 
 interface TeamLogoProps {
   team: string;

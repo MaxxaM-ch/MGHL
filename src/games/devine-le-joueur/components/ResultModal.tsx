@@ -3,7 +3,7 @@ import ShareResult from "./ShareResult";
 import StreakBadge from "../../../components/StreakBadge";
 import CountdownTimer from "../../../components/CountdownTimer";
 import type { GuessFeedback } from "../logic";
-import "../../../styles/components/result-modal.scss";
+import "../../../styles/components/devine-le-joueur/result-modal.scss";
 
 interface ResultModalProps {
   won: boolean;

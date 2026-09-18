@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { formatCountdown, msUntilNextUtcMidnight } from "../lib/countdown";
-import "../styles/components/countdown-timer.scss";
+import "../styles/components/shared/countdown-timer.scss";
 
 export default function CountdownTimer() {
   const [remainingMs, setRemainingMs] = useState(() => msUntilNextUtcMidnight(new Date()));

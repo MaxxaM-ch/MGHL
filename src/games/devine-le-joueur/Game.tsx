@@ -8,7 +8,7 @@ import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-pro
 import { formatDateKey, pickDailyItem } from "../../lib/daily-puzzle/seed";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
 import { compareGuess, deriveStatus, getBlurLevel, type GuessFeedback, type Status } from "./logic";
-import "../../styles/games/devine-le-joueur.scss";
+import "../../styles/components/devine-le-joueur/devine-le-joueur.scss";
 
 const GAME_ID = "devine-le-joueur";
 const MAX_ATTEMPTS = 6;

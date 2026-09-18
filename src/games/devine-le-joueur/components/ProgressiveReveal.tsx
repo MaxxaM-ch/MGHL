@@ -3,7 +3,7 @@ import type { NormalizedPlayer } from "../../../lib/nhl-api/types";
 import { calculateAge } from "../logic";
 import { countryFlagUrl } from "../../../lib/country-flags";
 import TeamLogo from "../../../components/TeamLogo";
-import "../../../styles/components/progressive-reveal.scss";
+import "../../../styles/components/devine-le-joueur/progressive-reveal.scss";
 
 interface ProgressiveRevealProps {
   player: NormalizedPlayer;

@@ -1,5 +1,5 @@
-@use "../variables" as *;
-@use "../buttons" as *;
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .guess-input {
   position: relative;

@@ -1,3 +1,23 @@
+@use "variables" as *;
+
+@mixin btn-accent {
+  display: inline-block;
+  padding: 0.65rem 1.1rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: $bg-light;
+  font-family: $font-body;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: var(--accent-hover);
+  }
+}
+
 @keyframes modal-fade-in {
   from {
     opacity: 0;

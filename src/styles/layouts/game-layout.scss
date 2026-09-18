@@ -1,6 +1,5 @@
 @use "../variables" as *;
-@use "../buttons" as *;
-@use "../modal" as *;
+@use "../mixins" as *;
 
 .game-layout {
   max-width: $content-width;

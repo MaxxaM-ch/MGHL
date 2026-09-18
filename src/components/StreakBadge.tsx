@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getStats, type GameStats } from "../lib/storage/stats";
-import "../styles/components/streak-badge.scss";
+import "../styles/components/shared/streak-badge.scss";
 
 interface StreakBadgeProps {
   gameId: string;

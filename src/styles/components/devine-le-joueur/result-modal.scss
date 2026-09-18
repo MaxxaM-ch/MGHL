@@ -1,5 +1,5 @@
-@use "../variables" as *;
-@use "../modal" as *;
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .result-modal-backdrop {
   @include modal-backdrop;
