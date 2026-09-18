@@ -14,6 +14,16 @@ async function fetchJson<T>(url: string): Promise<T> {
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       const res = await fetch(url);
+      if (res.status === 429) {
+        // Rate-limited: back off longer than a regular retry, honoring
+        // Retry-After when the API sends one instead of guessing.
+        const retryAfterSeconds = Number(res.headers.get("retry-after"));
+        const delayMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0 ? retryAfterSeconds * 1000 : 2000 * attempt;
+        if (attempt < MAX_RETRIES) {
+          await sleep(delayMs);
+          continue;
+        }
+      }
       if (!res.ok) {
         throw new Error(`Request to ${url} failed with status ${res.status}`);
       }

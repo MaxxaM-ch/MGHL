@@ -17,6 +17,17 @@ describe("getStats", () => {
       bestStreak: 0,
     });
   });
+
+  it("returns zeroed stats when the stored value is corrupted", () => {
+    localStorage.setItem("mghl:stats:devine-le-joueur", "{not valid json");
+
+    expect(getStats(GAME_ID)).toEqual({
+      gamesPlayed: 0,
+      wins: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+    });
+  });
 });
 
 describe("recordResult", () => {

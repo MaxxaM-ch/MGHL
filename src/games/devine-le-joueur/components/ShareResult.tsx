@@ -20,14 +20,20 @@ export default function ShareResult({
   showCopyButton = true,
 }: ShareResultProps) {
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
 
   const scoreLine = won ? `${attempts.length}/${maxAttempts}` : `X/${maxAttempts}`;
   const grid = buildShareGrid(attempts);
   const shareText = `${gameTitle} ${scoreLine}\n${grid}`;
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(shareText);
-    setCopied(true);
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      setCopyFailed(false);
+    } catch {
+      setCopyFailed(true);
+    }
   }
 
   return (
@@ -35,7 +41,7 @@ export default function ShareResult({
       <p className="share-result__text">{showTitle ? shareText : grid}</p>
       {showCopyButton && (
         <button type="button" className="share-result__button" onClick={handleCopy}>
-          {copied ? "Copié !" : "Copier le résultat"}
+          {copied ? "Copié !" : copyFailed ? "Échec de la copie" : "Copier le résultat"}
         </button>
       )}
     </div>

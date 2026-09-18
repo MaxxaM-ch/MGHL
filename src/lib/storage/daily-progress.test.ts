@@ -37,4 +37,10 @@ describe("getDailyProgress", () => {
     expect(getDailyProgress(GAME_ID, TODAY)?.guessedPlayerIds).toEqual([1]);
     expect(getDailyProgress("devine-le-logo", TODAY)?.guessedPlayerIds).toEqual([9]);
   });
+
+  it("returns null when the stored value is corrupted", () => {
+    localStorage.setItem("mghl:progress:devine-le-joueur", "{not valid json");
+
+    expect(getDailyProgress(GAME_ID, TODAY)).toBeNull();
+  });
 });

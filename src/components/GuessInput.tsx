@@ -28,11 +28,18 @@ export default function GuessInput({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const suggestionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+  // Lowercased once per options change instead of on every keystroke.
+  const lowerLabels = useMemo(() => options.map((o) => o.label.toLowerCase()), [options]);
+
   const suggestions = useMemo(() => {
     if (query.trim().length === 0 || selectedId !== null) return [];
     const lowerQuery = query.toLowerCase();
-    return options.filter((o) => o.label.toLowerCase().includes(lowerQuery)).slice(0, MAX_SUGGESTIONS);
-  }, [query, options, selectedId]);
+    const matches: GuessOption[] = [];
+    for (let i = 0; i < options.length && matches.length < MAX_SUGGESTIONS; i++) {
+      if (lowerLabels[i].includes(lowerQuery)) matches.push(options[i]);
+    }
+    return matches;
+  }, [query, options, lowerLabels, selectedId]);
 
   function selectOption(option: GuessOption) {
     setQuery(option.label);
@@ -87,6 +94,7 @@ export default function GuessInput({
           value={query}
           disabled={disabled}
           placeholder={placeholder}
+          aria-label="Nom du joueur"
           onChange={(e) => {
             setQuery(e.target.value);
             setSelectedId(null);

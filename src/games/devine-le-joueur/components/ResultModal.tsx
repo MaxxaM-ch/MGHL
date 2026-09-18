@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import ShareResult from "./ShareResult";
 import StreakBadge from "../../../components/StreakBadge";
 import CountdownTimer from "../../../components/CountdownTimer";
@@ -10,19 +11,44 @@ interface ResultModalProps {
   attempts: GuessFeedback[];
   maxAttempts: number;
   gameId: string;
+  gameTitle: string;
   onClose: () => void;
 }
 
-export default function ResultModal({ won, message, attempts, maxAttempts, gameId, onClose }: ResultModalProps) {
+export default function ResultModal({
+  won,
+  message,
+  attempts,
+  maxAttempts,
+  gameId,
+  gameTitle,
+  onClose,
+}: ResultModalProps) {
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   return (
     <div className="result-modal-backdrop" onClick={onClose}>
-      <div className="result-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="result-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="result-modal-message"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button type="button" className="result-modal__close" onClick={onClose} aria-label="Fermer">
           ×
         </button>
-        <p className="result-modal__message">{message}</p>
+        <p className="result-modal__message" id="result-modal-message">
+          {message}
+        </p>
         <ShareResult
-          gameTitle="Devine le joueur"
+          gameTitle={gameTitle}
           attempts={attempts}
           won={won}
           maxAttempts={maxAttempts}

@@ -19,7 +19,11 @@ function storageKey(gameId: string): string {
 export function getStats(gameId: string): GameStats {
   const raw = localStorage.getItem(storageKey(gameId));
   if (!raw) return { ...ZERO_STATS };
-  return JSON.parse(raw) as GameStats;
+  try {
+    return JSON.parse(raw) as GameStats;
+  } catch {
+    return { ...ZERO_STATS };
+  }
 }
 
 export function recordResult(gameId: string, won: boolean): void {

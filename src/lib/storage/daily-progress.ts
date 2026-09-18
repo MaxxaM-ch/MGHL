@@ -11,8 +11,12 @@ export function getDailyProgress(gameId: string, today: string): DailyProgress |
   const raw = localStorage.getItem(storageKey(gameId));
   if (!raw) return null;
 
-  const parsed = JSON.parse(raw) as DailyProgress;
-  return parsed.date === today ? parsed : null;
+  try {
+    const parsed = JSON.parse(raw) as DailyProgress;
+    return parsed.date === today ? parsed : null;
+  } catch {
+    return null;
+  }
 }
 
 export function saveDailyProgress(gameId: string, today: string, guessedPlayerIds: number[]): void {

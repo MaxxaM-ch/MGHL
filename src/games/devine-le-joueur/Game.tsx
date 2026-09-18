@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AttemptFeedbackRow, { FeedbackGridHeader } from "./components/AttemptFeedbackRow";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
 import ProgressiveReveal from "./components/ProgressiveReveal";
@@ -31,6 +31,7 @@ function playerLabel(player: NormalizedPlayer): string {
 export default function Game() {
   const [pool, setPool] = useState<NormalizedPlayer[] | null>(null);
   const [target, setTarget] = useState<NormalizedPlayer | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [status, setStatus] = useState<Status>("playing");
   const [revealReady, setRevealReady] = useState(false);
@@ -75,6 +76,9 @@ export default function Game() {
           .map((player) => ({ player, feedback: compareGuess(player, dailyTarget, new Date()) }));
         setAttempts(restoredAttempts);
         setStatus(deriveStatus(restoredAttempts.map((a) => a.player), dailyTarget, MAX_ATTEMPTS));
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError(true);
       });
     return () => {
       cancelled = true;
@@ -102,11 +106,16 @@ export default function Game() {
     }
   }
 
-  const options: GuessOption[] = pool
-    ? pool.map((p) => ({ id: p.id, label: playerLabel(p), team: p.team }))
-    : [];
+  const options: GuessOption[] = useMemo(
+    () => (pool ? pool.map((p) => ({ id: p.id, label: playerLabel(p), team: p.team })) : []),
+    [pool],
+  );
 
   const blurPx = status === "playing" ? getBlurLevel(attempts.length, MAX_ATTEMPTS) : 0;
+
+  if (loadError) {
+    return <p>Impossible de charger les joueurs. Réessaie plus tard.</p>;
+  }
 
   if (!pool || !target) {
     return <p>Chargement des joueurs…</p>;
@@ -144,6 +153,7 @@ export default function Game() {
           attempts={attempts.map((a) => a.feedback)}
           maxAttempts={MAX_ATTEMPTS}
           gameId={GAME_ID}
+          gameTitle="Devine le joueur"
           onClose={() => setResultModalDismissed(true)}
         />
       )}
