@@ -1,6 +1,6 @@
 export interface DailyProgress {
   date: string;
-  guessedPlayerIds: number[];
+  guessedIds: (string | number)[];
 }
 
 function storageKey(gameId: string): string {
@@ -19,7 +19,7 @@ export function getDailyProgress(gameId: string, today: string): DailyProgress |
   }
 }
 
-export function saveDailyProgress(gameId: string, today: string, guessedPlayerIds: number[]): void {
-  const progress: DailyProgress = { date: today, guessedPlayerIds };
+export function saveDailyProgress(gameId: string, today: string, guessedIds: (string | number)[]): void {
+  const progress: DailyProgress = { date: today, guessedIds };
   localStorage.setItem(storageKey(gameId), JSON.stringify(progress));
 }

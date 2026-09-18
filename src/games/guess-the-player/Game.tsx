@@ -6,8 +6,9 @@ import ResultModal from "./components/ResultModal";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import { formatDateKey, pickDailyItem } from "../../lib/daily-puzzle/seed";
+import { deriveGuessStatus, type GuessStatus } from "../../lib/daily-puzzle/status";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
-import { compareGuess, deriveStatus, getBlurLevel, type GuessFeedback, type Status } from "./logic";
+import { compareGuess, getBlurLevel, isWinningGuess, type GuessFeedback } from "./logic";
 import "../../styles/components/guess-the-player/guess-the-player.scss";
 
 const GAME_ID = "guess-the-player";
@@ -33,7 +34,7 @@ export default function Game() {
   const [target, setTarget] = useState<NormalizedPlayer | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
-  const [status, setStatus] = useState<Status>("playing");
+  const [status, setStatus] = useState<GuessStatus>("playing");
   const [revealReady, setRevealReady] = useState(false);
   const [modalReady, setModalReady] = useState(false);
   const [resultModalDismissed, setResultModalDismissed] = useState(false);
@@ -70,12 +71,12 @@ export default function Game() {
         const saved = getDailyProgress(GAME_ID, today);
         if (!saved) return;
 
-        const restoredAttempts: Attempt[] = saved.guessedPlayerIds
+        const restoredAttempts: Attempt[] = saved.guessedIds
           .map((id) => data.find((p) => p.id === id))
           .filter((p): p is NormalizedPlayer => p !== undefined)
           .map((player) => ({ player, feedback: compareGuess(player, dailyTarget, new Date()) }));
         setAttempts(restoredAttempts);
-        setStatus(deriveStatus(restoredAttempts.map((a) => a.player), dailyTarget, MAX_ATTEMPTS));
+        setStatus(deriveGuessStatus(restoredAttempts.map((a) => a.player), dailyTarget, MAX_ATTEMPTS, isWinningGuess));
       })
       .catch(() => {
         if (!cancelled) setLoadError(true);
@@ -100,7 +101,7 @@ export default function Game() {
       nextAttempts.map((a) => a.player.id),
     );
 
-    const nextStatus = deriveStatus(nextAttempts.map((a) => a.player), target, MAX_ATTEMPTS);
+    const nextStatus = deriveGuessStatus(nextAttempts.map((a) => a.player), target, MAX_ATTEMPTS, isWinningGuess);
     setStatus(nextStatus);
     if (nextStatus !== "playing") {
       recordResult(GAME_ID, nextStatus === "won");

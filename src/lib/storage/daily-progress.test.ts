@@ -20,7 +20,16 @@ describe("getDailyProgress", () => {
 
     expect(getDailyProgress(GAME_ID, TODAY)).toEqual({
       date: TODAY,
-      guessedPlayerIds: [1, 2, 3],
+      guessedIds: [1, 2, 3],
+    });
+  });
+
+  it("also accepts non-numeric ids, for games that guess by string (e.g. a team abbreviation)", () => {
+    saveDailyProgress(GAME_ID, TODAY, ["TOR", "EDM"]);
+
+    expect(getDailyProgress(GAME_ID, TODAY)).toEqual({
+      date: TODAY,
+      guessedIds: ["TOR", "EDM"],
     });
   });
 
@@ -34,8 +43,8 @@ describe("getDailyProgress", () => {
     saveDailyProgress(GAME_ID, TODAY, [1]);
     saveDailyProgress("devine-le-logo", TODAY, [9]);
 
-    expect(getDailyProgress(GAME_ID, TODAY)?.guessedPlayerIds).toEqual([1]);
-    expect(getDailyProgress("devine-le-logo", TODAY)?.guessedPlayerIds).toEqual([9]);
+    expect(getDailyProgress(GAME_ID, TODAY)?.guessedIds).toEqual([1]);
+    expect(getDailyProgress("devine-le-logo", TODAY)?.guessedIds).toEqual([9]);
   });
 
   it("returns null when the stored value is corrupted", () => {
