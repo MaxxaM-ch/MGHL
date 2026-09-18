@@ -35,7 +35,10 @@
   z-index: 2;
   left: 0.4rem;
   top: 0.4rem;
-  bottom: 0.4rem;
+  // An <img> is a replaced element: with height left to "auto", it sizes
+  // from its own intrinsic ratio instead of stretching to fill top/bottom
+  // like a div would. Set height explicitly so it actually fills the box.
+  height: calc(100% - 0.8rem);
   width: calc(100% - 0.8rem);
   opacity: 1;
   transition:
@@ -52,7 +55,9 @@
   z-index: 2;
   left: 12px;
   top: 8px;
-  bottom: 0;
+  // Same replaced-element quirk as .player-reveal__image--guessing above:
+  // an explicit height is needed, "bottom" alone won't stretch an <img>.
+  height: calc(100% - 8px);
   width: 190px;
   border-radius: $radius-12 $radius-12 0 0;
   object-position: center bottom;
@@ -151,4 +156,25 @@
   width: 100px;
   height: 100px;
   object-fit: contain;
+}
+
+// Below this width, the 224px reserved for the portrait image plus the
+// team logo leaves negative room for the name/stats text (it was
+// overflowing off-screen). Shrink the portrait and logo so the info
+// column keeps real space to breathe.
+@media (max-width: $breakpoint-mobile) {
+  .player-reveal__image--portrait {
+    left: 8px;
+    width: 90px;
+  }
+
+  .player-reveal__info {
+    padding: 0 $p-m-12 0 108px;
+  }
+
+  .player-reveal__team-logo {
+    width: 56px;
+    height: 56px;
+    margin-right: $p-m-8;
+  }
 }

@@ -87,6 +87,7 @@ export default function Game() {
 
   function handleGuess(playerId: number) {
     if (!pool || !target || status !== "playing") return;
+    if (attempts.some((a) => a.player.id === playerId)) return;
     const guessedPlayer = pool.find((p) => p.id === playerId);
     if (!guessedPlayer) return;
 
@@ -106,12 +107,20 @@ export default function Game() {
     }
   }
 
+  const guessedIds = useMemo(() => new Set(attempts.map((a) => a.player.id)), [attempts]);
+
   const options: GuessOption[] = useMemo(
-    () => (pool ? pool.map((p) => ({ id: p.id, label: playerLabel(p), team: p.team })) : []),
-    [pool],
+    () =>
+      pool
+        ? pool.filter((p) => !guessedIds.has(p.id)).map((p) => ({ id: p.id, label: playerLabel(p), team: p.team }))
+        : [],
+    [pool, guessedIds],
   );
 
-  const blurPx = status === "playing" ? getBlurLevel(attempts.length, MAX_ATTEMPTS) : 0;
+  // Stay blurred until the reveal actually starts, even once the game has
+  // ended: clearing early would show the sharp photo well before the
+  // staged reveal animation, spoiling the mystery player.
+  const blurPx = revealReady ? 0 : getBlurLevel(attempts.length, MAX_ATTEMPTS);
 
   if (loadError) {
     return <p>Impossible de charger les joueurs. Réessaie plus tard.</p>;
