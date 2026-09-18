@@ -97,11 +97,8 @@ async function collectPlayers(
 }
 
 function writePlayerData(players: NormalizedPlayer[]): void {
-  mkdirSync("src/data/generated", { recursive: true });
-  writeFileSync("src/data/generated/players.json", JSON.stringify(players, null, 2));
-
-  // Also expose the full dataset as a static asset: the game island fetches it
-  // client-side on mount rather than embedding it in the page bundle.
+  // The game island fetches this client-side on mount, rather than the data
+  // being embedded in the page bundle.
   mkdirSync("public/data", { recursive: true });
   writeFileSync("public/data/players.json", JSON.stringify(players));
 }
