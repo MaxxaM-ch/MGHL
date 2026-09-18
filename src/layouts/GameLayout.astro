@@ -1,0 +1,77 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import "../styles/layouts/game-layout.scss";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={`${title} — MGHL`} description={description}>
+  <div class="game-layout">
+    <header class="game-layout__header">
+      <a class="game-layout__logo-link" href="/" aria-label="Retour à l'accueil MGHL">
+        <img
+          class="game-layout__logo game-layout__logo--light"
+          src="/logo/mghl-mark-color.svg"
+          alt="MGHL"
+          width="215"
+          height="32"
+        />
+        <img
+          class="game-layout__logo game-layout__logo--dark"
+          src="/logo/mghl-mark-white.svg"
+          alt="MGHL"
+          width="215"
+          height="32"
+        />
+      </a>
+      <div class="game-layout__row">
+        <a class="game-layout__quit" href="/"><span aria-hidden="true">←</span> Quitter</a>
+        <div class="game-layout__heading">
+          <h1 class="game-layout__title">{title}</h1>
+          <p class="game-layout__description">{description}</p>
+        </div>
+        <button type="button" id="how-to-play-trigger" class="game-layout__how-to-play">
+          Comment jouer <span aria-hidden="true">?</span>
+        </button>
+      </div>
+    </header>
+    <main class="game-layout__content">
+      <slot />
+    </main>
+  </div>
+
+  <div id="how-to-play-modal" class="how-to-play-modal-backdrop" hidden>
+    <div class="how-to-play-modal" role="dialog" aria-modal="true" aria-labelledby="how-to-play-title">
+      <button type="button" class="how-to-play-modal__close" id="how-to-play-close" aria-label="Fermer">×</button>
+      <h2 id="how-to-play-title" class="how-to-play-modal__title">Comment jouer</h2>
+      <div class="how-to-play-modal__body">
+        <slot name="how-to-play" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const trigger = document.getElementById("how-to-play-trigger");
+  const modal = document.getElementById("how-to-play-modal");
+  const closeButton = document.getElementById("how-to-play-close");
+
+  trigger?.addEventListener("click", () => {
+    modal?.removeAttribute("hidden");
+  });
+
+  closeButton?.addEventListener("click", () => {
+    modal?.setAttribute("hidden", "");
+  });
+
+  modal?.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.setAttribute("hidden", "");
+    }
+  });
+</script>

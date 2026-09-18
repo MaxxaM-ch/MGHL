@@ -1,0 +1,27 @@
+// Base-4px scale (0.25rem increments). Shared by padding/margin/gap
+$p-m-4: 0.25rem; // 4px
+$p-m-8: 0.5rem; // 8px
+$p-m-12: 0.75rem; // 12px
+$p-m-16: 1rem; // 16px
+$p-m-20: 1.25rem; // 20px
+$p-m-24: 1.5rem; // 24px
+$p-m-28: 1.75rem; // 28px
+$p-m-32: 2rem; // 32px
+$p-m-64: 4rem; // 64px
+$p-m-80: 5rem; // 80px
+
+// Radius scale (0.25rem increments). Shared by border-radius
+$radius-4: 0.25rem; // 4px
+$radius-8: 0.5rem; // 8px
+$radius-12: 0.75rem; // 12px
+$radius-16: 1rem; // 16px
+$radius-20: 1.25rem; // 20px
+$radius-24: 1.5rem; // 24px
+$radius-28: 1.75rem; // 28px
+$radius-32: 2rem; // 32px
+$radius-64: 4rem; // 64px
+$radius-80: 5rem; // 80px
+
+// Non-linear radii that don't belong on the numeric scale above.
+$radius-circle: 50%;
+$radius-pill: 999px;

@@ -1,10 +1,11 @@
-@use "variables" as *;
+@use "variables/colors" as *;
 @use "sass:color";
 
 :root {
   --bg: #{$bg-light};
   --text: #{$text-light};
   --accent: #{$color-teal};
+  --accent-hover: #{color.scale($color-teal, $lightness: -12%)};
   --brand: #{$color-navy};
   --accent-rgb: #{color.channel($color-teal, "red")}, #{color.channel($color-teal, "green")},
     #{color.channel($color-teal, "blue")};
@@ -21,6 +22,7 @@
     --bg: #{$bg-dark};
     --text: #{$text-dark};
     --accent: #{$color-teal};
+    --accent-hover: #{color.scale($color-teal, $lightness: -12%)};
     --brand: #{$text-dark};
     --card-bg: rgba(var(--warm-white-rgb), 0.05);
     --card-border: rgba(var(--warm-white-rgb), 0.14);

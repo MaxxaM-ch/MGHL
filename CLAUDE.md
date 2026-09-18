@@ -46,14 +46,14 @@ Pour lancer un seul fichier de test : `npm run test -- <nom-du-fichier>`.
 ├── docs/superpowers/{specs,plans}/
 └── src/
     ├── layouts/                  → BaseLayout, GameLayout
-    ├── components/                → UI partagée (ProgressiveReveal, GuessInput, ShareResult, StreakBadge...)
+    ├── components/                → UI partagée (GuessInput, StreakBadge, TeamLogo, CountdownTimer...)
     ├── games/<nom-du-jeu>/        → Game.tsx (îlot) + logic.ts (pur, testé) + logic.test.ts
     ├── lib/
     │   ├── nhl-api/               → client + types — appelé uniquement par scripts/sync-nhl-data.ts
     │   ├── daily-puzzle/seed.ts   → tirage déterministe du jour, exécuté au build
     │   └── storage/stats.ts       → wrapper localStorage (séries, stats)
     ├── data/{curated,generated}/  → curated = versionné (lignes, clips) / generated = régénéré au build, gitignore
-    ├── pages/jeux/*.astro         → une route par jeu
+    ├── pages/games/*.astro        → une route par jeu
     └── styles/
 ```
 

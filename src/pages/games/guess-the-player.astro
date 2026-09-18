@@ -1,0 +1,22 @@
+---
+import GameLayout from "../../layouts/GameLayout.astro";
+import Game from "../../games/guess-the-player/Game.tsx";
+---
+
+<GameLayout
+  title="Devine le joueur"
+  description="Trouve le joueur mystère du jour en 6 tentatives."
+>
+  <Fragment slot="how-to-play">
+    <p>Un joueur mystère de la LNH est tiré chaque jour, le même pour tout le monde.</p>
+    <p>Propose des joueurs dans le champ de recherche : tu as 6 tentatives pour trouver le bon.</p>
+    <p>Après chaque tentative, une ligne compare le joueur proposé au joueur mystère, attribut par attribut :</p>
+    <ul>
+      <li><strong>Case verte (✔)</strong> : l'attribut est identique.</li>
+      <li><strong>Case orange (↑/↓)</strong> : le joueur mystère a une valeur plus grande ou plus petite.</li>
+      <li><strong>Case grise</strong> : aucun rapport avec le joueur mystère.</li>
+    </ul>
+    <p>La photo du joueur mystère se dévoile un peu plus à chaque tentative.</p>
+  </Fragment>
+  <Game client:load />
+</GameLayout>

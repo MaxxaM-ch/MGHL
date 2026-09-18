@@ -1,0 +1,65 @@
+@use "colors" as *;
+@use "spacing" as *;
+
+@mixin btn-accent {
+  display: inline-block;
+  padding: $p-m-12 $p-m-16;
+  border-radius: $radius-8;
+  border: none;
+  background: var(--accent);
+  color: $bg-light;
+  font-family: $font-body;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: var(--accent-hover);
+  }
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@mixin modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $p-m-24;
+  background: rgba(10, 16, 32, 0.55);
+  animation: modal-fade-in 0.2s ease;
+}
+
+@mixin modal-panel {
+  position: relative;
+  width: 100%;
+  border-radius: $radius-16;
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
+}
+
+@mixin modal-close-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: $radius-circle;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}

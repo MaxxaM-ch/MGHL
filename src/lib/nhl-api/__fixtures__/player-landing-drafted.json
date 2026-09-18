@@ -1,0 +1,24 @@
+{
+  "playerId": 8478402,
+  "firstName": {
+    "default": "Connor"
+  },
+  "lastName": {
+    "default": "McDavid"
+  },
+  "currentTeamAbbrev": "EDM",
+  "position": "C",
+  "sweaterNumber": 97,
+  "birthCountry": "CAN",
+  "birthDate": "1997-01-13",
+  "heightInCentimeters": 185,
+  "headshot": "https://assets.nhle.com/mugs/nhl/20262027/EDM/8478402.png",
+  "heroImage": "https://assets.nhle.com/mugs/actionshots/1296x729/8478402.jpg",
+  "draftDetails": {
+    "year": 2015,
+    "teamAbbrev": "EDM",
+    "round": 1,
+    "pickInRound": 1,
+    "overallPick": 1
+  }
+}

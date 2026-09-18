@@ -1,0 +1,43 @@
+const ALPHA2_BY_COUNTRY_CODE: Record<string, string> = {
+  CAN: "ca",
+  USA: "us",
+  RUS: "ru",
+  SWE: "se",
+  FIN: "fi",
+  CZE: "cz",
+  SVK: "sk",
+  DEU: "de",
+  CHE: "ch",
+  DNK: "dk",
+  NOR: "no",
+  FRA: "fr",
+  AUT: "at",
+  BEL: "be",
+  GBR: "gb",
+  ITA: "it",
+  LVA: "lv",
+  POL: "pl",
+  SVN: "si",
+  AUS: "au",
+  BLR: "by",
+  CHN: "cn",
+  JPN: "jp",
+  KOR: "kr",
+  UKR: "ua",
+  HUN: "hu",
+  EST: "ee",
+  LTU: "lt",
+  NLD: "nl",
+  ESP: "es",
+  MEX: "mx",
+  KAZ: "kz",
+  IRL: "ie",
+  NZL: "nz",
+  ZAF: "za",
+  BRA: "br",
+};
+
+export function countryFlagUrl(countryCode: string): string | null {
+  const alpha2 = ALPHA2_BY_COUNTRY_CODE[countryCode];
+  return alpha2 ? `https://flagcdn.com/${alpha2}.svg` : null;
+}

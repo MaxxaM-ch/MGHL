@@ -1,0 +1,19 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+.streak-badge {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: $p-m-8;
+  margin-top: $p-m-16;
+}
+
+.streak-badge__item {
+  padding: $p-m-4 $p-m-12;
+  border-radius: $radius-pill;
+  background: var(--card-bg);
+  font-family: $font-body;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}

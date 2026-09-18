@@ -1,0 +1,27 @@
+@use "../../variables/spacing" as *;
+
+.team-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-logo--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .team-logo--light {
+    display: none;
+  }
+
+  .team-logo--dark {
+    display: block;
+  }
+
+  .team-logo-badge {
+    background: rgba(250, 247, 240, 0.92);
+    border-radius: $radius-8;
+    padding: $p-m-4;
+  }
+}

@@ -1,0 +1,14 @@
+@use "../../variables/colors" as *;
+
+.guess-the-player {
+  display: flex;
+  flex-direction: column;
+}
+
+.guess-the-player .guess-input,
+.guess-the-player > p {
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
