@@ -8,9 +8,9 @@ import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-pro
 import { formatDateKey, pickDailyItem } from "../../lib/daily-puzzle/seed";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
 import { compareGuess, deriveStatus, getBlurLevel, type GuessFeedback, type Status } from "./logic";
-import "../../styles/components/devine-le-joueur/devine-le-joueur.scss";
+import "../../styles/components/guess-the-player/guess-the-player.scss";
 
-const GAME_ID = "devine-le-joueur";
+const GAME_ID = "guess-the-player";
 const MAX_ATTEMPTS = 6;
 // Lets the newest feedback row's cell-flip animation finish before the big
 // reveal starts (see feedback-grid.scss: 8 cells x 0.08s stagger + 0.35s ~= 910ms).
@@ -122,7 +122,7 @@ export default function Game() {
   }
 
   return (
-    <div className="devine-le-joueur">
+    <div className="guess-the-player">
       <ProgressiveReveal player={target} blurPx={blurPx} revealed={revealReady} />
 
       {status === "playing" && (

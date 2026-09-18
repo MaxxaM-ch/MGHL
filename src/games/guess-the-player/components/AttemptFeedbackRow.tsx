@@ -3,7 +3,7 @@ import type { NormalizedPlayer } from "../../../lib/nhl-api/types";
 import { calculateAge, type AttributeComparison, type GuessFeedback } from "../logic";
 import TeamLogo from "../../../components/TeamLogo";
 import { countryFlagUrl } from "../../../lib/country-flags";
-import "../../../styles/components/devine-le-joueur/feedback-grid.scss";
+import "../../../styles/components/guess-the-player/feedback-grid.scss";
 
 interface AttemptFeedbackRowProps {
   player: NormalizedPlayer;
