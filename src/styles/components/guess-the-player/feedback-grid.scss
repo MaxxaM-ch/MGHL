@@ -127,3 +127,17 @@
     animation: none;
   }
 }
+
+// Below this width, 8 columns (name + 7 attributes) can't fit without
+// shrinking cells past a readable size. Wrap into 2 rows of 4 instead: the
+// same 8-cell count repeats identically for the header and every attempt,
+// so each column still lines up down the page, just across two lines.
+@media (max-width: $breakpoint-mobile) {
+  .feedback-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .feedback-grid__cell--name {
+    white-space: normal;
+  }
+}
