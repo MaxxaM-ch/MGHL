@@ -1,9 +1,10 @@
-@use "variables" as *;
+@use "colors" as *;
+@use "spacing" as *;
 
 @mixin btn-accent {
   display: inline-block;
-  padding: 0.65rem 1.1rem;
-  border-radius: 8px;
+  padding: $p-m-12 $p-m-16;
+  border-radius: $radius-8;
   border: none;
   background: var(--accent);
   color: $bg-light;
@@ -34,7 +35,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: $p-m-24;
   background: rgba(10, 16, 32, 0.55);
   animation: modal-fade-in 0.2s ease;
 }
@@ -42,7 +43,7 @@
 @mixin modal-panel {
   position: relative;
   width: 100%;
-  border-radius: 16px;
+  border-radius: $radius-16;
   background: var(--bg);
   border: 1px solid var(--card-border);
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
@@ -55,7 +56,7 @@
   width: 32px;
   height: 32px;
   border: none;
-  border-radius: 50%;
+  border-radius: $radius-circle;
   background: var(--card-bg);
   color: var(--text);
   font-size: 1.2rem;

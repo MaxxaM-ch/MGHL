@@ -1,12 +1,13 @@
-@use "../../variables" as *;
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
 
 .player-reveal {
   position: relative;
   width: clamp(140px, 55vw, 220px);
   height: clamp(140px, 55vw, 220px);
-  margin: 0 auto 1.25rem;
-  padding: 0.4rem;
-  border-radius: 14px;
+  margin: 0 auto $p-m-20;
+  padding: $p-m-8;
+  border-radius: $radius-16;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   overflow: hidden;
@@ -21,13 +22,13 @@
   width: 100%;
   height: 200px;
   padding: 0;
-  border-radius: 16px;
+  border-radius: $radius-16;
 }
 
 .player-reveal__image {
   position: absolute;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: $radius-12;
 }
 
 .player-reveal__image--guessing {
@@ -53,7 +54,7 @@
   top: 8px;
   bottom: 0;
   width: 190px;
-  border-radius: 10px 10px 0 0;
+  border-radius: $radius-12 $radius-12 0 0;
   object-position: center bottom;
   opacity: 0;
   transition: opacity 0.35s ease 0.3s;
@@ -93,12 +94,14 @@
   z-index: 1;
   flex: 1;
   min-width: 0;
-  padding: 0 1.25rem 0 224px;
+  // 224px is not a spacing token: it must exactly match the portrait
+  // image's left offset + width so the text never overlaps the photo.
+  padding: 0 $p-m-20 0 224px;
   color: #faf7f0;
 }
 
 .player-reveal__name {
-  margin: 0 0 0.3rem;
+  margin: 0 0 $p-m-4;
   font-family: $font-display;
   line-height: 1.05;
 }
@@ -122,7 +125,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 0.4rem;
+  gap: $p-m-8;
   margin: 0;
   font-family: $font-body;
   font-size: 0.85rem;
@@ -137,14 +140,14 @@
   width: 20px;
   height: 14px;
   object-fit: cover;
-  border-radius: 2px;
+  border-radius: $radius-4;
 }
 
 .player-reveal__team-logo {
   position: relative;
   z-index: 1;
   flex-shrink: 0;
-  margin-right: 1.5rem;
+  margin-right: $p-m-24;
   width: 100px;
   height: 100px;
   object-fit: contain;

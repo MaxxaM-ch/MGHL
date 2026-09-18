@@ -1,11 +1,12 @@
-@use "../../variables" as *;
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
 
 .countdown-timer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
-  margin: 1rem 0;
+  gap: $p-m-4;
+  margin: $p-m-16 0;
 }
 
 .countdown-timer__label {
