@@ -7,7 +7,6 @@
   row-gap: 14px;
   margin: 0 0 1.5rem;
   overflow-x: auto;
-  perspective: 800px;
 }
 
 .feedback-grid__row {
@@ -103,11 +102,11 @@
 
 @keyframes feedback-cell-flip {
   from {
-    transform: rotateX(90deg);
+    transform: perspective(800px) rotateX(90deg);
     opacity: 0;
   }
   to {
-    transform: rotateX(0deg);
+    transform: perspective(800px) rotateX(0deg);
     opacity: 1;
   }
 }
