@@ -13,7 +13,8 @@ export function getDailyProgress(gameId: string, today: string): DailyProgress |
 
   try {
     const parsed = JSON.parse(raw) as DailyProgress;
-    return parsed.date === today ? parsed : null;
+    if (parsed.date !== today || !Array.isArray(parsed.guessedIds)) return null;
+    return parsed;
   } catch {
     return null;
   }

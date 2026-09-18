@@ -56,8 +56,14 @@ export default function Game() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/data/players.json")
-      .then((res) => res.json())
+    // no-store: this dataset changes daily (dev: manual resync, prod: the
+    // daily rebuild). Letting the browser reuse a cached/304 response could
+    // serve a stale pool at best, or an empty body to res.json() at worst.
+    fetch("/data/players.json", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`players.json request failed with status ${res.status}`);
+        return res.json();
+      })
       .then((data: NormalizedPlayer[]) => {
         if (cancelled) return;
         setPool(data);

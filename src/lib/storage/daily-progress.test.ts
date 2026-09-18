@@ -52,4 +52,13 @@ describe("getDailyProgress", () => {
 
     expect(getDailyProgress(GAME_ID, TODAY)).toBeNull();
   });
+
+  it("returns null when the stored value has an outdated shape (e.g. a pre-rename field name)", () => {
+    localStorage.setItem(
+      "mghl:progress:devine-le-joueur",
+      JSON.stringify({ date: TODAY, guessedPlayerIds: [1, 2, 3] }),
+    );
+
+    expect(getDailyProgress(GAME_ID, TODAY)).toBeNull();
+  });
 });
