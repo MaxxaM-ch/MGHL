@@ -1,7 +1,7 @@
 import type { RawPlayerLanding, RawRosterPlayer } from "./types";
 
 const BASE_URL = "https://api-web.nhle.com/v1";
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 6;
 const RETRY_DELAY_MS = 500;
 
 export function sleep(ms: number): Promise<void> {

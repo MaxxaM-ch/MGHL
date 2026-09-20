@@ -12,10 +12,16 @@ import type { NormalizedPlayer } from "../src/lib/nhl-api/types.ts";
 // placeholder silhouette instead. Detect it by content-length instead of status.
 const PLACEHOLDER_PHOTO_URL = "https://assets.nhle.com/mugs/nhl/20262027/ANA/1.png";
 
-// Bounds how many players within a team are fetched at once, so the ~1200
-// player/landing + photo-size requests don't run fully sequentially while
-// still being polite to the unofficial API.
-const PLAYER_CONCURRENCY = 3;
+// Rosters are cheap (32 small requests total), so they get their own light
+// concurrency. Player landing + photo checks are the expensive part (~1200
+// requests): they run through a single flat pool sized to what the
+// unofficial API tolerates before responding 429 — measured empirically,
+// since processing teams one at a time (effectively 3 concurrent requests)
+// was safe but too slow to finish inside Netlify's build time limit, while
+// a naive team-level x player-level multiply (36 concurrent) got rate-limited
+// within a minute.
+const ROSTER_CONCURRENCY = 4;
+const PLAYER_CONCURRENCY = 8;
 const REQUEST_SPACING_MS = 300;
 
 const HEAD_MAX_ATTEMPTS = 2;
@@ -62,35 +68,39 @@ async function collectPlayers(
   teams: string[],
   placeholderSize: number | null,
 ): Promise<{ players: NormalizedPlayer[]; skippedWithoutPhoto: number }> {
+  const rosters = await mapWithConcurrency(teams, ROSTER_CONCURRENCY, async (team) => {
+    const roster = await fetchTeamRoster(team);
+    console.log(`Fetched ${team} roster: ${roster.length} players`);
+    return { team, roster };
+  });
+
+  const entries = rosters.flatMap(({ team, roster }) =>
+    roster.map((rosterPlayer) => ({ team, rosterPlayer })),
+  );
+
+  const results = await mapWithConcurrency(entries, PLAYER_CONCURRENCY, async ({ team, rosterPlayer }) => {
+    // landing and the photo HEAD check both only need the roster entry, so
+    // they run together instead of one waiting on the other.
+    const [landing, photoSize] = await Promise.all([
+      fetchPlayerLanding(rosterPlayer.id),
+      getContentLength(rosterPlayer.headshot),
+    ]);
+    await sleep(REQUEST_SPACING_MS);
+
+    const player = normalizePlayer({ roster: rosterPlayer, landing, team });
+    const hasRealPhoto = photoSize !== null && photoSize !== placeholderSize;
+    return hasRealPhoto ? player : null;
+  });
+
   const players: NormalizedPlayer[] = [];
   let skippedWithoutPhoto = 0;
 
-  for (const team of teams) {
-    const roster = await fetchTeamRoster(team);
-
-    const teamPlayers = await mapWithConcurrency(roster, PLAYER_CONCURRENCY, async (rosterPlayer) => {
-      // landing and the photo HEAD check both only need the roster entry, so
-      // they run together instead of one waiting on the other.
-      const [landing, photoSize] = await Promise.all([
-        fetchPlayerLanding(rosterPlayer.id),
-        getContentLength(rosterPlayer.headshot),
-      ]);
-      await sleep(REQUEST_SPACING_MS);
-
-      const player = normalizePlayer({ roster: rosterPlayer, landing, team });
-      const hasRealPhoto = photoSize !== null && photoSize !== placeholderSize;
-      return hasRealPhoto ? player : null;
-    });
-
-    for (const player of teamPlayers) {
-      if (player) {
-        players.push(player);
-      } else {
-        skippedWithoutPhoto += 1;
-      }
+  for (const player of results) {
+    if (player) {
+      players.push(player);
+    } else {
+      skippedWithoutPhoto += 1;
     }
-
-    console.log(`Synced ${team}: ${roster.length} players`);
   }
 
   return { players, skippedWithoutPhoto };

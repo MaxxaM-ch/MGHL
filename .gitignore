@@ -3,7 +3,9 @@ docs
 
 # données régénérées au build depuis l'API NHL — non versionnées
 src/data/generated/
-public/data/
+
+# public/data/players.json est désormais versionné : synchronisé par le
+# rebuild quotidien (GitHub Actions), pas par le build Netlify lui-même.
 
 # build output
 dist/

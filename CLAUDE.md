@@ -31,7 +31,7 @@ Pour lancer un seul fichier de test : `npm run test -- <nom-du-fichier>`.
 - **Astro** + îlots **React** (TypeScript) — statique par défaut, JS uniquement sur les composants interactifs
 - **SCSS** pour les styles
 - **Vitest** pour les tests
-- Données : API non-officielle `api-web.nhle.com`, synchronisées au build (pas d'appel en direct au runtime)
+- Données : API non-officielle `api-web.nhle.com`, synchronisées par le rebuild quotidien (pas au build Netlify, pas d'appel en direct au runtime) — voir CI/CD
 - Hébergement : **Netlify**, déploiement continu + rebuild quotidien programmé
 
 ## Architecture
@@ -39,10 +39,10 @@ Pour lancer un seul fichier de test : `npm run test -- <nom-du-fichier>`.
 ```
 /
 ├── astro.config.mjs
-├── scripts/sync-nhl-data.ts     → fetch API NHL avant build, écrit src/data/generated/
+├── scripts/sync-nhl-data.ts     → fetch API NHL, écrit public/data/players.json (versionné)
 ├── .github/workflows/
 │   ├── ci.yml                   → lint + tests + build sur push/PR
-│   └── daily-rebuild.yml        → cron quotidien → webhook Netlify
+│   └── daily-rebuild.yml        → cron quotidien → sync-nhl-data.ts + commit → déploiement Netlify natif
 ├── docs/superpowers/{specs,plans}/
 └── src/
     ├── layouts/                  → BaseLayout, GameLayout
@@ -80,6 +80,6 @@ Détail complet : `docs/superpowers/specs/2026-09-08-mghl-mvp-design.md`.
 - Avant de committer une modif visuelle/interactive : `npm run test` + `npm run build`, aucune erreur
 
 **CI/CD**
-- CI (GitHub Actions) : lint + tests + build sur chaque push/PR
+- CI (GitHub Actions) : lint + tests + build sur chaque push/PR — utilise le `public/data/players.json` déjà versionné, aucun appel à l'API NHL
 - CD : gérée nativement par Netlify (déploiement auto par push, preview par branche)
-- Rebuild quotidien programmé : rafraîchit les données et fait tourner le puzzle du jour
+- Rebuild quotidien programmé (GitHub Actions, pas Netlify) : exécute `sync-nhl-data.ts` (~15-20 min, hors limite de build Netlify) et commit `public/data/players.json` sur `master` si les données ont changé — ce commit déclenche le déploiement Netlify normal

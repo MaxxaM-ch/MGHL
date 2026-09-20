@@ -6,9 +6,38 @@ on:
     - cron: "0 6 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  trigger-rebuild:
+  sync-player-data:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Netlify build hook
-        run: curl --fail --silent --show-error -X POST "${{ secrets.NETLIFY_BUILD_HOOK_URL }}"
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Runs here rather than in Netlify's build (prebuild) because syncing
+      # ~1200 players sequentially through the unofficial NHL API takes
+      # 15-20+ minutes — past Netlify's build timeout, but well within a
+      # GitHub Actions job's default 6h limit.
+      - run: npm run sync:data
+
+      - name: Commit refreshed player data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/players.json
+          if git diff --staged --quiet; then
+            echo "No player data changes, nothing to commit."
+          else
+            git commit -m "CONFIG : Refresh synced NHL player data"
+            git push origin master
+          fi
