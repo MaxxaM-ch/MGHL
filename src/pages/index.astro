@@ -1,17 +1,40 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
+import GameCard from "../components/GameCard.astro";
+import "../styles/pages/home.scss";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="MGHL — Mini Games Hockey League">
+  <main class="home">
+    <section class="home-hero">
+      <div class="home-hero__glow" aria-hidden="true"></div>
+      <img
+        class="home-hero__logo home-hero__logo--light"
+        src="/logo/mghl-full-color.svg"
+        alt="MGHL — Mini Games Hockey League"
+        width="984"
+        height="265"
+      />
+      <img
+        class="home-hero__logo home-hero__logo--dark"
+        src="/logo/mghl-full-white.svg"
+        alt="MGHL — Mini Games Hockey League"
+        width="984"
+        height="265"
+      />
+      <p class="home-hero__tagline">Un nouveau mini-jeu hockey à découvrir chaque jour.</p>
+    </section>
+
+    <section class="home-games">
+      <h2 class="home-games__title">Nos jeux</h2>
+      <div class="home-games__grid">
+        <GameCard
+          title="Devine le joueur"
+          description="Trouve le joueur mystère du jour en 6 tentatives."
+          href="/games/guess-the-player"
+          icon="/icons/guess-the-player.svg"
+        />
+      </div>
+    </section>
+  </main>
+</BaseLayout>

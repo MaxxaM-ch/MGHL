@@ -1,0 +1,180 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+.player-reveal {
+  position: relative;
+  width: clamp(140px, 55vw, 220px);
+  height: clamp(140px, 55vw, 220px);
+  margin: 0 auto $p-m-20;
+  padding: $p-m-8;
+  border-radius: $radius-16;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+  transition:
+    width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.4s ease,
+    padding 0.4s ease;
+}
+
+.player-reveal--revealed {
+  width: 100%;
+  height: 200px;
+  padding: 0;
+  border-radius: $radius-16;
+}
+
+.player-reveal__image {
+  position: absolute;
+  object-fit: cover;
+  border-radius: $radius-12;
+}
+
+.player-reveal__image--guessing {
+  z-index: 2;
+  left: 0.4rem;
+  top: 0.4rem;
+  // An <img> is a replaced element: with height left to "auto", it sizes
+  // from its own intrinsic ratio instead of stretching to fill top/bottom
+  // like a div would. Set height explicitly so it actually fills the box.
+  height: calc(100% - 0.8rem);
+  width: calc(100% - 0.8rem);
+  opacity: 1;
+  transition:
+    opacity 0.25s ease,
+    filter 0.3s ease;
+}
+
+.player-reveal--revealed .player-reveal__image--guessing {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.player-reveal__image--portrait {
+  z-index: 2;
+  left: 12px;
+  top: 8px;
+  // Same replaced-element quirk as .player-reveal__image--guessing above:
+  // an explicit height is needed, "bottom" alone won't stretch an <img>.
+  height: calc(100% - 8px);
+  width: 190px;
+  border-radius: $radius-12 $radius-12 0 0;
+  object-position: center bottom;
+  opacity: 0;
+  transition: opacity 0.35s ease 0.3s;
+  pointer-events: none;
+}
+
+.player-reveal--revealed .player-reveal__image--portrait {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.player-reveal__banner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center 20%;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.15s;
+  pointer-events: none;
+}
+
+.player-reveal--revealed .player-reveal__banner {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.player-reveal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 16, 32, 0.6);
+}
+
+.player-reveal__info {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  // 224px is not a spacing token: it must exactly match the portrait
+  // image's left offset + width so the text never overlaps the photo.
+  padding: 0 $p-m-20 0 224px;
+  color: #faf7f0;
+}
+
+.player-reveal__name {
+  margin: 0 0 $p-m-4;
+  font-family: $font-display;
+  line-height: 1.05;
+}
+
+.player-reveal__first-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.player-reveal__last-name {
+  display: block;
+  font-size: clamp(1.3rem, 3.5vw, 2rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.player-reveal__stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $p-m-8;
+  margin: 0;
+  font-family: $font-body;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.player-reveal__stats-separator {
+  opacity: 0.6;
+}
+
+.player-reveal__flag {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: $radius-4;
+}
+
+.player-reveal__team-logo {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  margin-right: $p-m-24;
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+// Below this width, the 224px reserved for the portrait image plus the
+// team logo leaves negative room for the name/stats text (it was
+// overflowing off-screen). Shrink the portrait and logo so the info
+// column keeps real space to breathe.
+@media (max-width: $breakpoint-mobile) {
+  .player-reveal__image--portrait {
+    left: 8px;
+    width: 90px;
+  }
+
+  .player-reveal__info {
+    padding: 0 $p-m-12 0 108px;
+  }
+
+  .player-reveal__team-logo {
+    width: 56px;
+    height: 56px;
+    margin-right: $p-m-8;
+  }
+}

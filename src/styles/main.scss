@@ -1,0 +1,56 @@
+@use "variables/colors" as *;
+@use "sass:color";
+
+:root {
+  --bg: #{$bg-light};
+  --text: #{$text-light};
+  --accent: #{$color-teal};
+  --accent-hover: #{color.scale($color-teal, $lightness: -12%)};
+  --brand: #{$color-navy};
+  --accent-rgb: #{color.channel($color-teal, "red")}, #{color.channel($color-teal, "green")},
+    #{color.channel($color-teal, "blue")};
+  --navy-rgb: #{color.channel($color-navy, "red")}, #{color.channel($color-navy, "green")},
+    #{color.channel($color-navy, "blue")};
+  --warm-white-rgb: #{color.channel($bg-light, "red")}, #{color.channel($bg-light, "green")},
+    #{color.channel($bg-light, "blue")};
+  --card-bg: rgba(var(--navy-rgb), 0.04);
+  --card-border: rgba(var(--navy-rgb), 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #{$bg-dark};
+    --text: #{$text-dark};
+    --accent: #{$color-teal};
+    --accent-hover: #{color.scale($color-teal, $lightness: -12%)};
+    --brand: #{$text-dark};
+    --card-bg: rgba(var(--warm-white-rgb), 0.05);
+    --card-border: rgba(var(--warm-white-rgb), 0.14);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: $font-body;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}

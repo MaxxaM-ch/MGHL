@@ -1,0 +1,116 @@
+@use "../variables/colors" as *;
+@use "../variables/spacing" as *;
+
+.home {
+  max-width: $content-width;
+  margin: 0 auto;
+  padding: 0 $p-m-24;
+}
+
+.home-hero {
+  position: relative;
+  min-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: $p-m-24;
+}
+
+.home-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--brand) 0,
+    var(--brand) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+  opacity: 0.05;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 72%);
+  pointer-events: none;
+}
+
+.home-hero__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(700px, 100vw);
+  height: min(700px, 100vw);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.home-hero__logo {
+  position: relative;
+  z-index: 1;
+  width: min(90vw, 620px);
+  height: auto;
+  animation: home-fade-up 0.7s ease both;
+}
+
+.home-hero__logo--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .home-hero__logo--light {
+    display: none;
+  }
+  .home-hero__logo--dark {
+    display: block;
+  }
+}
+
+.home-hero__tagline {
+  position: relative;
+  z-index: 1;
+  font-family: $font-body;
+  font-size: 1.05rem;
+  opacity: 0.8;
+  margin: 0;
+  animation: home-fade-up 0.7s ease 0.15s both;
+}
+
+.home-games__title {
+  font-family: $font-display;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 1.5rem;
+  animation: home-fade-up 0.7s ease 0.3s both;
+}
+
+.home-games__grid {
+  margin: $p-m-80 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  justify-items: center;
+  gap: $p-m-20;
+  animation: home-fade-up 0.7s ease 0.45s both;
+}
+
+@keyframes home-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__logo,
+  .home-hero__tagline,
+  .home-games__title,
+  .home-games__grid {
+    animation: none;
+  }
+}

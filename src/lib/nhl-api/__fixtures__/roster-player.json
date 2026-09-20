@@ -1,0 +1,25 @@
+{
+  "id": 8478402,
+  "headshot": "https://assets.nhle.com/mugs/nhl/20262027/EDM/8478402.png",
+  "firstName": {
+    "default": "Connor"
+  },
+  "lastName": {
+    "default": "McDavid"
+  },
+  "sweaterNumber": 97,
+  "positionCode": "C",
+  "shootsCatches": "L",
+  "heightInInches": 73,
+  "weightInPounds": 194,
+  "heightInCentimeters": 185,
+  "weightInKilograms": 88,
+  "birthDate": "1997-01-13",
+  "birthCity": {
+    "default": "Richmond Hill"
+  },
+  "birthCountry": "CAN",
+  "birthStateProvince": {
+    "default": "ON"
+  }
+}

@@ -1,0 +1,151 @@
+@use "../variables/colors" as *;
+@use "../variables/spacing" as *;
+@use "../variables/mixins" as *;
+
+.game-layout {
+  max-width: $content-width;
+  margin: 0 auto;
+  padding: 0 $p-m-24 $p-m-64;
+}
+
+.game-layout__header {
+  padding: $p-m-32 0 $p-m-24;
+  text-align: center;
+}
+
+.game-layout__logo-link {
+  display: inline-block;
+  margin-bottom: $p-m-16;
+}
+
+.game-layout__logo {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+.game-layout__logo--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .game-layout__logo--light {
+    display: none;
+  }
+
+  .game-layout__logo--dark {
+    display: block;
+  }
+}
+
+.game-layout__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $p-m-16;
+  width: 100%;
+}
+
+.game-layout__heading {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .game-layout__row {
+    flex-wrap: wrap;
+    row-gap: $p-m-16;
+  }
+
+  .game-layout__heading {
+    order: -1;
+    flex-basis: 100%;
+  }
+}
+
+.game-layout__title {
+  font-family: $font-display;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 2rem;
+  margin: 0 0 $p-m-8;
+}
+
+.game-layout__description {
+  font-family: $font-body;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.game-layout__content {
+  max-width: $content-width;
+  margin: 0 auto;
+}
+
+.game-layout__how-to-play {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  color: var(--text);
+  text-decoration: underline;
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.game-layout__how-to-play:hover {
+  opacity: 1;
+}
+
+.game-layout__quit {
+  @include btn-accent;
+  flex-shrink: 0;
+}
+
+.how-to-play-modal-backdrop {
+  @include modal-backdrop;
+}
+
+.how-to-play-modal-backdrop[hidden] {
+  display: none;
+}
+
+.how-to-play-modal {
+  @include modal-panel;
+  max-width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: $p-m-32 $p-m-24 $p-m-24;
+}
+
+.how-to-play-modal__close {
+  @include modal-close-button;
+}
+
+.how-to-play-modal__title {
+  margin: 0 0 $p-m-16;
+  font-family: $font-display;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.how-to-play-modal__body {
+  font-family: $font-body;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.how-to-play-modal__body p {
+  margin: 0 0 $p-m-12;
+}
+
+.how-to-play-modal__body ul {
+  margin: 0 0 $p-m-12;
+  padding-left: $p-m-20;
+}

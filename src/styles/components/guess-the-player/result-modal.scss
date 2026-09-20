@@ -1,0 +1,26 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+@use "../../variables/mixins" as *;
+
+.result-modal-backdrop {
+  @include modal-backdrop;
+}
+
+.result-modal {
+  @include modal-panel;
+  max-width: 360px;
+  padding: $p-m-32 $p-m-24 $p-m-24;
+  text-align: center;
+}
+
+.result-modal__close {
+  @include modal-close-button;
+}
+
+.result-modal__message {
+  margin: 0 0 $p-m-16;
+  font-family: $font-display;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
