@@ -39,8 +39,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 700px;
-  height: 700px;
+  width: min(700px, 100vw);
+  height: min(700px, 100vw);
   transform: translate(-50%, -50%);
   background: radial-gradient(circle, rgba(var(--accent-rgb), 0.16), transparent 70%);
   pointer-events: none;
@@ -90,6 +90,8 @@
   margin: $p-m-80 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  justify-items: center;
+  gap: $p-m-20;
   animation: home-fade-up 0.7s ease 0.45s both;
 }
 
