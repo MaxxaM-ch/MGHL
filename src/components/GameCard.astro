@@ -5,14 +5,17 @@ interface Props {
   title: string;
   description: string;
   href: string;
+  icon: string;
 }
 
-const { title, description, href } = Astro.props;
+const { title, description, href, icon } = Astro.props;
 ---
 
 <a class="game-card" href={href}>
-  <span class="game-card__accent" aria-hidden="true"></span>
-  <h3 class="game-card__title">{title}</h3>
-  <p class="game-card__description">{description}</p>
-  <span class="game-card__cta">Jouer <span aria-hidden="true">→</span></span>
+  <img class="game-card__icon" src={icon} alt="" aria-hidden="true" />
+  <div class="game-card__content">
+    <h3 class="game-card__title">{title}</h3>
+    <p class="game-card__description">{description}</p>
+  </div>
+  <span class="game-card__cta">Jouer</span>
 </a>

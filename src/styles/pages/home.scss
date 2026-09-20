@@ -77,24 +77,19 @@
   animation: home-fade-up 0.7s ease 0.15s both;
 }
 
-.home-games {
-  padding: $p-m-32 0 $p-m-80;
-}
-
 .home-games__title {
   font-family: $font-display;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-size: 1.5rem;
-  margin: 0 0 $p-m-24;
   animation: home-fade-up 0.7s ease 0.3s both;
 }
 
 .home-games__grid {
+  margin: $p-m-80 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: $p-m-20;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   animation: home-fade-up 0.7s ease 0.45s both;
 }
 

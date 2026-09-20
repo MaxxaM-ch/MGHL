@@ -1,18 +1,18 @@
 @use "../../variables/colors" as *;
 @use "../../variables/spacing" as *;
+@use "../../variables/mixins" as *;
 
 .game-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: $p-m-8;
-  padding: $p-m-28 $p-m-24 $p-m-24;
+  max-width: 320px;
+  padding: $p-m-24;
   border-radius: $radius-16;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   text-decoration: none;
   color: var(--text);
-  overflow: hidden;
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
@@ -23,54 +23,42 @@
     transform: translateY(-4px);
     border-color: var(--accent);
     box-shadow: 0 12px 24px -12px rgba(var(--accent-rgb), 0.35);
-
-    .game-card__accent {
-      transform: scaleX(1);
-    }
-
-    .game-card__cta {
-      gap: $p-m-8;
-    }
   }
 }
 
-.game-card__accent {
+.game-card__icon {
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.25s ease;
+  left: 50%;
+  width: min(80px, 170px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.game-card__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: $p-m-32 0 $p-m-16 0;
 }
 
 .game-card__title {
-  margin: 0;
   font-family: $font-display;
+  margin-bottom: 0;
   font-weight: 600;
-  font-size: 1.75rem;
+  font-size: 1.375rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  line-height: 1;
 }
 
 .game-card__description {
-  margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--text);
   opacity: 0.75;
-  flex-grow: 1;
+  text-align: center;
 }
 
 .game-card__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: $p-m-4;
-  margin-top: $p-m-8;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--accent);
-  transition: gap 0.2s ease;
+  @include btn-accent;
+  align-self: flex-end;
 }
