@@ -1,0 +1,28 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+.share-result {
+  margin: $p-m-16 0;
+}
+
+.share-result__text {
+  white-space: pre-line;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.share-result__button {
+  padding: $p-m-8 $p-m-20;
+  border-radius: $radius-8;
+  border: 1px solid var(--card-border);
+  background: none;
+  color: var(--text);
+  font-family: $font-body;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.share-result__button:hover {
+  background: var(--card-bg);
+}

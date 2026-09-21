@@ -1,0 +1,22 @@
+@use "../../variables/mixins" as *;
+@use "../../variables/spacing" as *;
+
+.result-modal-backdrop {
+  @include modal-backdrop;
+}
+
+.result-modal {
+  @include modal-panel;
+  max-width: 400px;
+  padding: $p-m-24;
+  text-align: center;
+}
+
+.result-modal__close {
+  @include modal-close-button;
+}
+
+.result-modal__message {
+  font-weight: 600;
+  margin: 0 0 $p-m-16;
+}
