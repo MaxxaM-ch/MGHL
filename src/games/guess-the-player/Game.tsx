@@ -68,19 +68,20 @@ export default function Game() {
         if (cancelled) return;
         setPool(data);
 
+        const now = new Date();
         // Picked client-side (never passed down from the server) so the
         // answer never appears in the page's static HTML.
-        const dailyTarget = pickDailyItem(data, new Date());
+        const dailyTarget = pickDailyItem(data, now);
         setTarget(dailyTarget);
 
-        const today = formatDateKey(new Date());
+        const today = formatDateKey(now);
         const saved = getDailyProgress(GAME_ID, today);
         if (!saved) return;
 
         const restoredAttempts: Attempt[] = saved.guessedIds
           .map((id) => data.find((p) => p.id === id))
           .filter((p): p is NormalizedPlayer => p !== undefined)
-          .map((player) => ({ player, feedback: compareGuess(player, dailyTarget, new Date()) }));
+          .map((player) => ({ player, feedback: compareGuess(player, dailyTarget, now) }));
         setAttempts(restoredAttempts);
         setStatus(deriveGuessStatus(restoredAttempts.map((a) => a.player), dailyTarget, MAX_ATTEMPTS, isWinningGuess));
       })

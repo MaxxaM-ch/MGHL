@@ -1,0 +1,9 @@
+// src/styles/components/guess-the-logo/guess-the-logo.scss
+@use "../../variables/spacing" as *;
+
+.guess-the-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $p-m-24;
+}
