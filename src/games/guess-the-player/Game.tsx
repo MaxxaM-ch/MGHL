@@ -92,7 +92,7 @@ export default function Game() {
     };
   }, []);
 
-  function handleGuess(playerId: number) {
+  function handleGuess(playerId: string | number) {
     if (!pool || !target || status !== "playing") return;
     if (attempts.some((a) => a.player.id === playerId)) return;
     const guessedPlayer = pool.find((p) => p.id === playerId);

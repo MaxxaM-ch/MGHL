@@ -3,14 +3,14 @@ import TeamLogo from "./TeamLogo";
 import "../styles/components/shared/guess-input.scss";
 
 export interface GuessOption {
-  id: number;
+  id: string | number;
   label: string;
   team: string;
 }
 
 interface GuessInputProps {
   options: GuessOption[];
-  onSubmit: (id: number) => void;
+  onSubmit: (id: string | number) => void;
   disabled?: boolean;
   placeholder?: string;
 }
@@ -24,7 +24,7 @@ export default function GuessInput({
   placeholder = "Nom du joueur",
 }: GuessInputProps) {
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | number | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const suggestionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
