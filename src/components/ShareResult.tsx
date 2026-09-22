@@ -1,29 +1,24 @@
 import { useState } from "react";
-import { buildShareGrid, type GuessFeedback } from "../logic";
-import "../../../styles/components/guess-the-player/share-result.scss";
+import "../styles/components/shared/share-result.scss";
 
 interface ShareResultProps {
   gameTitle: string;
-  attempts: GuessFeedback[];
-  won: boolean;
-  maxAttempts: number;
+  scoreLine: string;
+  grid: string;
   showTitle?: boolean;
   showCopyButton?: boolean;
 }
 
 export default function ShareResult({
   gameTitle,
-  attempts,
-  won,
-  maxAttempts,
+  scoreLine,
+  grid,
   showTitle = true,
   showCopyButton = true,
 }: ShareResultProps) {
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
 
-  const scoreLine = won ? `${attempts.length}/${maxAttempts}` : `X/${maxAttempts}`;
-  const grid = buildShareGrid(attempts);
   const shareText = `${gameTitle} ${scoreLine}\n${grid}`;
 
   async function handleCopy() {

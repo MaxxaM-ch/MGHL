@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import AttemptFeedbackRow, { FeedbackGridHeader } from "./components/AttemptFeedbackRow";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
+import ResultModal from "../../components/ResultModal";
 import ProgressiveReveal from "./components/ProgressiveReveal";
-import ResultModal from "./components/ResultModal";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import { formatDateKey, pickDailyItem } from "../../lib/daily-puzzle/seed";
 import { deriveGuessStatus, type GuessStatus } from "../../lib/daily-puzzle/status";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
-import { compareGuess, getBlurLevel, isWinningGuess, type GuessFeedback } from "./logic";
+import { buildShareGrid, compareGuess, getBlurLevel, isWinningGuess, type GuessFeedback } from "./logic";
 import "../../styles/components/guess-the-player/guess-the-player.scss";
 
 const GAME_ID = "guess-the-player";
@@ -68,19 +68,20 @@ export default function Game() {
         if (cancelled) return;
         setPool(data);
 
+        const now = new Date();
         // Picked client-side (never passed down from the server) so the
         // answer never appears in the page's static HTML.
-        const dailyTarget = pickDailyItem(data, new Date());
+        const dailyTarget = pickDailyItem(data, now);
         setTarget(dailyTarget);
 
-        const today = formatDateKey(new Date());
+        const today = formatDateKey(now);
         const saved = getDailyProgress(GAME_ID, today);
         if (!saved) return;
 
         const restoredAttempts: Attempt[] = saved.guessedIds
           .map((id) => data.find((p) => p.id === id))
           .filter((p): p is NormalizedPlayer => p !== undefined)
-          .map((player) => ({ player, feedback: compareGuess(player, dailyTarget, new Date()) }));
+          .map((player) => ({ player, feedback: compareGuess(player, dailyTarget, now) }));
         setAttempts(restoredAttempts);
         setStatus(deriveGuessStatus(restoredAttempts.map((a) => a.player), dailyTarget, MAX_ATTEMPTS, isWinningGuess));
       })
@@ -92,7 +93,7 @@ export default function Game() {
     };
   }, []);
 
-  function handleGuess(playerId: number) {
+  function handleGuess(playerId: string | number) {
     if (!pool || !target || status !== "playing") return;
     if (attempts.some((a) => a.player.id === playerId)) return;
     const guessedPlayer = pool.find((p) => p.id === playerId);
@@ -160,14 +161,13 @@ export default function Game() {
 
       {modalReady && !resultModalDismissed && (
         <ResultModal
-          won={status === "won"}
           message={
             status === "won"
               ? `Trouvé en ${attempts.length} tentative${attempts.length > 1 ? "s" : ""} !`
               : `Perdu ! Le joueur était ${playerLabel(target)}.`
           }
-          attempts={attempts.map((a) => a.feedback)}
-          maxAttempts={MAX_ATTEMPTS}
+          scoreLine={status === "won" ? `${attempts.length}/${MAX_ATTEMPTS}` : `X/${MAX_ATTEMPTS}`}
+          grid={buildShareGrid(attempts.map((a) => a.feedback))}
           gameId={GAME_ID}
           gameTitle="Devine le joueur"
           onClose={() => setResultModalDismissed(true)}

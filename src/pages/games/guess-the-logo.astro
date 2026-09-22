@@ -1,0 +1,17 @@
+---
+// src/pages/games/guess-the-logo.astro
+import GameLayout from "../../layouts/GameLayout.astro";
+import Game from "../../games/guess-the-logo/Game.tsx";
+---
+
+<GameLayout
+  title="Devine le logo"
+  description="Trouve l'équipe mystère à partir de son logo en 6 tentatives."
+>
+  <Fragment slot="how-to-play">
+    <p>Un logo d'équipe de la LNH est tiré chaque jour, le même pour tout le monde.</p>
+    <p>Il est affiché très zoomé au départ. Propose une équipe dans le champ de recherche : à chaque tentative, l'image se dézoome un peu plus.</p>
+    <p>Tu as 6 tentatives pour trouver la bonne équipe avant que le logo soit révélé en entier.</p>
+  </Fragment>
+  <Game client:load />
+</GameLayout>

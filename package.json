@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "sync:data": "node scripts/sync-nhl-data.ts",
+    "compute:logo-bounds": "node scripts/compute-logo-bounds.ts",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -35,6 +36,7 @@
     "globals": "^17.12.0",
     "jsdom": "^29.1.1",
     "sass-embedded": "^1.104.1",
+    "sharp": "^0.35.4",
     "typescript-eslint": "^8.70.0",
     "vitest": "^5.0.0"
   }

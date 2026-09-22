@@ -30,9 +30,13 @@
   position: absolute;
   top: 0;
   left: 50%;
-  width: min(80px, 170px);
+  width: 80px;
   transform: translate(-50%, -50%);
   pointer-events: none;
+}
+
+.game-card__icon--large {
+  width: $p-m-96;
 }
 
 .game-card__content {

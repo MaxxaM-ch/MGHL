@@ -1,0 +1,176 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+// Where the big reveal logo comes to rest after sliding in (see
+// @keyframes logo-reveal-slide-in below) — the team name's start position
+// is derived from this, so a future tweak to the logo's landing spot can't
+// silently break their alignment the way two independent magic numbers
+// could.
+$reveal-logo-landing-position: 22%;
+$reveal-name-start-position: $reveal-logo-landing-position + 6%;
+
+// Explicit width AND height on both this and the --revealed rule below —
+// like guess-the-player's player-reveal — rather than aspect-ratio or
+// max-width: none, neither of which reliably transitions (aspect-ratio
+// doesn't smoothly interpolate against an explicit height on the other
+// side, and max-width can't animate to/from none at all, it just snaps).
+// Height is fixed at exactly 2/3 of each width value to keep the 3:2 ratio
+// the zoom math (logic.ts) relies on.
+.logo-reveal {
+  position: relative;
+  width: clamp(220px, 85vw, 320px);
+  height: clamp(147px, 56.67vw, 213px);
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: $radius-16;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition:
+    width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Matches guess-the-player's player-reveal--revealed: the box grows from a
+// small preview into a full-width banner once the answer is known.
+.logo-reveal--revealed {
+  width: 100%;
+  height: 200px;
+}
+
+.logo-reveal__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition:
+    transform 0.6s ease,
+    opacity 0.3s ease,
+    filter 0.3s ease;
+}
+
+.logo-reveal--revealed .logo-reveal__image {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.logo-reveal__banner {
+  position: absolute;
+  inset: 0;
+  // background and background-size are set inline (LogoReveal.tsx) — the
+  // background-image urls depend on the team, and background-size has to
+  // live in the same inline style or the shorthand there resets it anyway.
+  opacity: 0;
+  transition: opacity 0.5s ease 0.15s;
+  pointer-events: none;
+}
+
+.logo-reveal--revealed .logo-reveal__banner {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.logo-reveal__image--light {
+  display: block;
+}
+
+.logo-reveal__image--dark {
+  display: none;
+}
+
+// Big logo that fades in centered, holds, then slides left to make room
+// for the team name — only runs once the box has flipped to its revealed,
+// wide-banner shape.
+.logo-reveal__reveal-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 55%;
+  width: auto;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.logo-reveal--revealed .logo-reveal__reveal-logo {
+  animation: logo-reveal-slide-in 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+}
+
+@keyframes logo-reveal-slide-in {
+  0% {
+    left: 50%;
+    opacity: 0;
+  }
+  40% {
+    left: 50%;
+    opacity: 1;
+  }
+  100% {
+    left: $reveal-logo-landing-position;
+    opacity: 1;
+  }
+}
+
+.logo-reveal__name {
+  position: absolute;
+  top: 50%;
+  // Starts just right of where the logo comes to rest, so the text sits
+  // directly under the logo's actual travel path (50% -> landing) instead
+  // of off to the side where the logo never passes over it.
+  left: $reveal-name-start-position;
+  right: $p-m-16;
+  transform: translateY(-50%);
+  margin: 0;
+  color: #faf7f0;
+  font-family: $font-display;
+  font-size: clamp(1.2rem, 3.2vw, 1.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  // Fully clipped from the left — none of the text is visible yet.
+  clip-path: inset(0 0 0 100%);
+}
+
+// The logo travels right-to-left, so the name reveals the same way: it
+// grows from its own right edge toward the left (clip-path's left-inset
+// shrinking), matching the logo's direction rather than opposing it.
+// Slowed down (1.1s, not a quick flick) so it reads clearly instead of
+// snapping into place.
+.logo-reveal--revealed .logo-reveal__name {
+  animation: logo-reveal-name-wipe 1.1s cubic-bezier(0.4, 0, 0.2, 1) 1s forwards;
+}
+
+@keyframes logo-reveal-name-wipe {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0%);
+  }
+}
+
+.logo-reveal__reveal-logo--light {
+  display: block;
+}
+
+.logo-reveal__reveal-logo--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo-reveal__image--light {
+    display: none;
+  }
+  .logo-reveal__image--dark {
+    display: block;
+  }
+
+  .logo-reveal__reveal-logo--light {
+    display: none;
+  }
+  .logo-reveal__reveal-logo--dark {
+    display: block;
+  }
+}
