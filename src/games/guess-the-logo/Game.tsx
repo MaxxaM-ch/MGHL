@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
+import AttemptHistory from "./components/AttemptHistory";
 import LogoReveal from "./components/LogoReveal";
 import ResultModal from "./components/ResultModal";
 import { recordResult } from "../../lib/storage/stats";
@@ -7,7 +8,7 @@ import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-pro
 import { formatDateKey, pickDailyItem } from "../../lib/daily-puzzle/seed";
 import { deriveGuessStatus, type GuessStatus } from "../../lib/daily-puzzle/status";
 import { TEAM_LOGOS, type TeamLogoEntry } from "../../data/curated/team-logos";
-import { computeZoomTransform, isWinningGuess, pickDailyFocusPoint } from "./logic";
+import { computeZoomTransform, getBlurLevel, getSaturationLevel, isWinningGuess, pickDailyFocusPoint } from "./logic";
 import "../../styles/components/guess-the-logo/guess-the-logo.scss";
 
 const GAME_ID = "guess-the-logo";
@@ -107,12 +108,19 @@ export default function Game() {
   const transform = revealed
     ? { scale: 1, translateXPercent: 0, translateYPercent: 0 }
     : computeZoomTransform(attempts.length, MAX_ATTEMPTS, focusPoint);
+  // Stay blurred/desaturated until the reveal actually starts, even once
+  // the game has ended: clearing early would show the sharp, full-color
+  // logo well before the staged reveal animation, spoiling the mystery.
+  const blurPx = revealed ? 0 : getBlurLevel(attempts.length, MAX_ATTEMPTS);
+  const saturationPercent = revealed ? 100 : getSaturationLevel(attempts.length, MAX_ATTEMPTS);
 
   return (
     <div className="guess-the-logo">
       <LogoReveal
         team={target.abbrev}
         revealed={revealed}
+        blurPx={blurPx}
+        saturationPercent={saturationPercent}
         alt={revealed ? target.name : "Logo mystère"}
         name={revealed ? target.name : undefined}
         {...transform}
@@ -126,6 +134,8 @@ export default function Game() {
           placeholder={`Tentative ${attempts.length + 1} / ${MAX_ATTEMPTS}`}
         />
       )}
+
+      <AttemptHistory attempts={attempts} target={target.abbrev} />
 
       {modalReady && !resultModalDismissed && (
         <ResultModal

@@ -1,0 +1,45 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+.attempt-history {
+  display: flex;
+  flex-direction: column;
+  gap: $p-m-8;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.attempt-history__row {
+  display: flex;
+  align-items: center;
+  gap: $p-m-12;
+  padding: $p-m-12 $p-m-16;
+  border-radius: $radius-8;
+  border: 2px solid;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.attempt-history__row--correct {
+  background: rgba($feedback-exact, 0.12);
+  border-color: $feedback-exact;
+}
+
+.attempt-history__row--wrong {
+  background: rgba($feedback-wrong, 0.12);
+  border-color: $feedback-wrong;
+}
+
+.attempt-history__logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.attempt-history__name {
+  font-family: $font-body;
+}

@@ -37,7 +37,8 @@
   object-fit: contain;
   transition:
     transform 0.6s ease,
-    opacity 0.3s ease;
+    opacity 0.3s ease,
+    filter 0.3s ease;
 }
 
 .logo-reveal--revealed .logo-reveal__image {

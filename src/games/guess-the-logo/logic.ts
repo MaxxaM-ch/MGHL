@@ -47,6 +47,23 @@ export function computeZoomTransform(
   return { scale, translateXPercent, translateYPercent };
 }
 
+const MAX_BLUR_PX = 24;
+
+// Uses attemptCount (0 before any guess), not attemptIndex — unlike
+// computeZoomTransform, there's no "current attempt slot" here, just how
+// many guesses have been used so far.
+export function getBlurLevel(attemptCount: number, maxAttempts: number): number {
+  const remainingRatio = (maxAttempts - attemptCount) / maxAttempts;
+  return MAX_BLUR_PX * remainingRatio;
+}
+
+// Fully grayscale before any guess, ramping up to full color by the last
+// attempt — removes the "distinctive team color" shortcut alongside the
+// blur, so an early guess can't be based on color alone.
+export function getSaturationLevel(attemptCount: number, maxAttempts: number): number {
+  return (attemptCount / maxAttempts) * 100;
+}
+
 export function buildShareGrid(attemptCount: number, won: boolean): string {
   return Array.from({ length: attemptCount }, (_, i) => (won && i === attemptCount - 1 ? "🟩" : "🟥")).join("\n");
 }

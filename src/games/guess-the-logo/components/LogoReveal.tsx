@@ -6,6 +6,8 @@ interface LogoRevealProps {
   scale: number;
   translateXPercent: number;
   translateYPercent: number;
+  blurPx: number;
+  saturationPercent: number;
   revealed: boolean;
   alt?: string;
   name?: string;
@@ -16,12 +18,15 @@ export default function LogoReveal({
   scale,
   translateXPercent,
   translateYPercent,
+  blurPx,
+  saturationPercent,
   revealed,
   alt = "Logo mystère",
   name,
 }: LogoRevealProps) {
   const zoomStyle = {
     transform: `scale(${scale}) translate(${translateXPercent}%, ${translateYPercent}%)`,
+    filter: `blur(${blurPx}px) saturate(${saturationPercent}%)`,
   };
   const bannerStyle = {
     background: `radial-gradient(50% 100% at 50% 0%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.65) 100%), url(${teamWireLogoUrl(team)}) center no-repeat, linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0, 1) 100%), url(${teamJerseyTextureUrl(team)}) repeat`,

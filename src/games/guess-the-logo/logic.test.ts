@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { isWinningGuess, pickDailyFocusPoint, computeZoomTransform, buildShareGrid, type ContentBounds } from "./logic";
+import {
+  isWinningGuess,
+  pickDailyFocusPoint,
+  computeZoomTransform,
+  buildShareGrid,
+  getBlurLevel,
+  getSaturationLevel,
+  type ContentBounds,
+} from "./logic";
 
 describe("isWinningGuess", () => {
   it("returns true when the guessed abbreviation matches the target", () => {
@@ -108,6 +116,34 @@ describe("computeZoomTransform", () => {
     expect(result.scale).toBe(5);
     expect(result.translateXPercent).toBeCloseTo(20);
     expect(result.translateYPercent).toBeCloseTo(-20);
+  });
+});
+
+describe("getBlurLevel", () => {
+  it("is at its maximum before any attempt", () => {
+    expect(getBlurLevel(0, 6)).toBe(24);
+  });
+
+  it("decreases linearly between the first and last attempt", () => {
+    expect(getBlurLevel(3, 6)).toBe(12);
+  });
+
+  it("reaches zero once all attempts are used", () => {
+    expect(getBlurLevel(6, 6)).toBe(0);
+  });
+});
+
+describe("getSaturationLevel", () => {
+  it("is fully desaturated before any attempt", () => {
+    expect(getSaturationLevel(0, 6)).toBe(0);
+  });
+
+  it("increases linearly between the first and last attempt", () => {
+    expect(getSaturationLevel(3, 6)).toBe(50);
+  });
+
+  it("reaches full saturation once all attempts are used", () => {
+    expect(getSaturationLevel(6, 6)).toBe(100);
   });
 });
 
