@@ -12,12 +12,12 @@ export default function AttemptHistory({ attempts, target }: AttemptHistoryProps
 
   return (
     <ul className="attempt-history">
-      {[...attempts].reverse().map((abbrev, index) => {
+      {[...attempts].reverse().map((abbrev) => {
         const isCorrect = abbrev === target;
         const teamName = TEAM_LOGOS.find((t) => t.abbrev === abbrev)?.name ?? abbrev;
         return (
           <li
-            key={attempts.length - index}
+            key={abbrev}
             className={`attempt-history__row${isCorrect ? " attempt-history__row--correct" : " attempt-history__row--wrong"}`}
           >
             <TeamLogo team={abbrev} className="attempt-history__logo" />

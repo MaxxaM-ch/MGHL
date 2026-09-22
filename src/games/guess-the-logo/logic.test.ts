@@ -131,6 +131,14 @@ describe("getBlurLevel", () => {
   it("reaches zero once all attempts are used", () => {
     expect(getBlurLevel(6, 6)).toBe(0);
   });
+
+  it("clamps to zero when attemptCount exceeds maxAttempts", () => {
+    expect(getBlurLevel(9, 6)).toBe(0);
+  });
+
+  it("clamps to the maximum when attemptCount is negative", () => {
+    expect(getBlurLevel(-3, 6)).toBe(24);
+  });
 });
 
 describe("getSaturationLevel", () => {
@@ -144,6 +152,14 @@ describe("getSaturationLevel", () => {
 
   it("reaches full saturation once all attempts are used", () => {
     expect(getSaturationLevel(6, 6)).toBe(100);
+  });
+
+  it("clamps to full saturation when attemptCount exceeds maxAttempts", () => {
+    expect(getSaturationLevel(9, 6)).toBe(100);
+  });
+
+  it("clamps to zero when attemptCount is negative", () => {
+    expect(getSaturationLevel(-3, 6)).toBe(0);
   });
 });
 

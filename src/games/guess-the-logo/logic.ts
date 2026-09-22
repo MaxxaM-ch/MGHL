@@ -49,9 +49,12 @@ const MAX_BLUR_PX = 24;
 
 // Uses attemptCount (0 before any guess), not attemptIndex — unlike
 // computeZoomTransform, there's no "current attempt slot" here, just how
-// many guesses have been used so far.
+// many guesses have been used so far. Clamped the same way
+// computeZoomTransform clamps its own attemptIndex, so both stay correct
+// under the same out-of-range inputs instead of relying on the caller.
 export function getBlurLevel(attemptCount: number, maxAttempts: number): number {
-  const remainingRatio = (maxAttempts - attemptCount) / maxAttempts;
+  const clamped = Math.min(Math.max(attemptCount, 0), maxAttempts);
+  const remainingRatio = (maxAttempts - clamped) / maxAttempts;
   return MAX_BLUR_PX * remainingRatio;
 }
 
@@ -59,7 +62,8 @@ export function getBlurLevel(attemptCount: number, maxAttempts: number): number 
 // attempt — removes the "distinctive team color" shortcut alongside the
 // blur, so an early guess can't be based on color alone.
 export function getSaturationLevel(attemptCount: number, maxAttempts: number): number {
-  return (attemptCount / maxAttempts) * 100;
+  const clamped = Math.min(Math.max(attemptCount, 0), maxAttempts);
+  return (clamped / maxAttempts) * 100;
 }
 
 export function buildShareGrid(attemptCount: number, won: boolean): string {
