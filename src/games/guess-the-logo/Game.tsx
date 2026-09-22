@@ -12,15 +12,26 @@ import "../../styles/components/guess-the-logo/guess-the-logo.scss";
 
 const GAME_ID = "guess-the-logo";
 const MAX_ATTEMPTS = 6;
-// Lets the CSS zoom-out transition (logo-reveal.scss: 0.6s) finish playing
-// before the result modal covers the reveal.
-const MODAL_DELAY_MS = 700;
+// Gives the browser a real paint of the small, in-progress box before
+// flipping to the revealed state — without this, restoring an
+// already-finished game from localStorage sets status to "won"/"lost" in
+// the same mount effect that sets it up, so React can batch the
+// playing -> revealed change into a single paint and the box just
+// appears already-enlarged instead of animating. guess-the-player has the
+// same delay (REVEAL_DELAY_MS) for the same reason.
+const REVEAL_DELAY_MS = 400;
+// Lets the full reveal choreography (logo-reveal.scss: box grows, banner
+// fades in, big logo appears then slides left, team name wipes in — the
+// last of these starts at 1s and takes 1.1s, ending at 2.1s) finish
+// playing before the result modal covers the reveal.
+const MODAL_DELAY_MS = 2400;
 
 export default function Game() {
   const [target, setTarget] = useState<TeamLogoEntry | null>(null);
   const [focusPoint, setFocusPoint] = useState<{ x: number; y: number } | null>(null);
   const [attempts, setAttempts] = useState<string[]>([]);
   const [status, setStatus] = useState<GuessStatus>("playing");
+  const [revealReady, setRevealReady] = useState(false);
   const [modalReady, setModalReady] = useState(false);
   const [resultModalDismissed, setResultModalDismissed] = useState(false);
 
@@ -49,9 +60,15 @@ export default function Game() {
 
   useEffect(() => {
     if (status === "playing") return;
-    const timer = setTimeout(() => setModalReady(true), MODAL_DELAY_MS);
+    const timer = setTimeout(() => setRevealReady(true), REVEAL_DELAY_MS);
     return () => clearTimeout(timer);
   }, [status]);
+
+  useEffect(() => {
+    if (!revealReady) return;
+    const timer = setTimeout(() => setModalReady(true), MODAL_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [revealReady]);
 
   function handleGuess(id: string | number) {
     const abbrev = String(id);
@@ -85,14 +102,21 @@ export default function Game() {
     return <p>Chargement…</p>;
   }
 
-  const revealed = status !== "playing";
+  // Gated on revealReady (delayed), not raw status: see REVEAL_DELAY_MS.
+  const revealed = revealReady;
   const transform = revealed
     ? { scale: 1, translateXPercent: 0, translateYPercent: 0 }
     : computeZoomTransform(attempts.length, MAX_ATTEMPTS, focusPoint);
 
   return (
     <div className="guess-the-logo">
-      <LogoReveal team={target.abbrev} alt={revealed ? target.name : "Logo mystère"} {...transform} />
+      <LogoReveal
+        team={target.abbrev}
+        revealed={revealed}
+        alt={revealed ? target.name : "Logo mystère"}
+        name={revealed ? target.name : undefined}
+        {...transform}
+      />
 
       {status === "playing" && (
         <GuessInput
