@@ -35,6 +35,10 @@
   pointer-events: none;
 }
 
+.game-card__icon--large {
+  width: min($p-m-96, 170px);
+}
+
 .game-card__content {
   display: flex;
   flex-direction: column;
