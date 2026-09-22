@@ -4,14 +4,20 @@ import "../../../styles/components/guess-the-logo/logo-reveal.scss";
 interface LogoRevealProps {
   team: string;
   scale: number;
-  originXPercent: number;
-  originYPercent: number;
+  translateXPercent: number;
+  translateYPercent: number;
+  alt?: string;
 }
 
-export default function LogoReveal({ team, scale, originXPercent, originYPercent }: LogoRevealProps) {
+export default function LogoReveal({
+  team,
+  scale,
+  translateXPercent,
+  translateYPercent,
+  alt = "Logo mystère",
+}: LogoRevealProps) {
   const style = {
-    transform: `scale(${scale})`,
-    transformOrigin: `${originXPercent}% ${originYPercent}%`,
+    transform: `scale(${scale}) translate(${translateXPercent}%, ${translateYPercent}%)`,
   };
 
   return (
@@ -19,13 +25,13 @@ export default function LogoReveal({ team, scale, originXPercent, originYPercent
       <img
         className="logo-reveal__image logo-reveal__image--light"
         src={teamLogoUrl(team, "light")}
-        alt="Logo mystère"
+        alt={alt}
         style={style}
       />
       <img
         className="logo-reveal__image logo-reveal__image--dark"
         src={teamLogoUrl(team, "dark")}
-        alt="Logo mystère"
+        alt={alt}
         style={style}
       />
     </div>

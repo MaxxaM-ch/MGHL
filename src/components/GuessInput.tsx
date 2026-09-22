@@ -13,6 +13,7 @@ interface GuessInputProps {
   onSubmit: (id: string | number) => void;
   disabled?: boolean;
   placeholder?: string;
+  ariaLabel?: string;
 }
 
 const MAX_SUGGESTIONS = 8;
@@ -22,6 +23,7 @@ export default function GuessInput({
   onSubmit,
   disabled = false,
   placeholder = "Nom du joueur",
+  ariaLabel = "Nom du joueur",
 }: GuessInputProps) {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
@@ -94,7 +96,7 @@ export default function GuessInput({
           value={query}
           disabled={disabled}
           placeholder={placeholder}
-          aria-label="Nom du joueur"
+          aria-label={ariaLabel}
           onChange={(e) => {
             setQuery(e.target.value);
             setSelectedId(null);

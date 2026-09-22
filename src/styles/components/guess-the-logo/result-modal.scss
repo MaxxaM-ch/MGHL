@@ -8,7 +8,7 @@
 .result-modal {
   @include modal-panel;
   max-width: 400px;
-  padding: $p-m-24;
+  padding: $p-m-32 $p-m-24 $p-m-24;
   text-align: center;
 }
 

@@ -1,11 +1,10 @@
-@use "../../variables/colors" as *;
 @use "../../variables/spacing" as *;
 
 .logo-reveal {
   position: relative;
   width: 100%;
   max-width: 320px;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 3 / 2;
   margin: 0 auto;
   overflow: hidden;
   border-radius: $radius-16;

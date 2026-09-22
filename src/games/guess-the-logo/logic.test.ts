@@ -52,35 +52,35 @@ describe("pickDailyFocusPoint", () => {
 describe("computeZoomTransform", () => {
   const focusPoint = { x: 0.3, y: 0.7 };
 
-  it("scales at x5 centered on the focus point at the first attempt", () => {
+  it("scales at x5 with the focus point translated to center at the first attempt", () => {
     const result = computeZoomTransform(0, 6, focusPoint);
     expect(result.scale).toBe(5);
-    expect(result.originXPercent).toBeCloseTo(30);
-    expect(result.originYPercent).toBeCloseTo(70);
+    expect(result.translateXPercent).toBeCloseTo(20);
+    expect(result.translateYPercent).toBeCloseTo(-20);
   });
 
-  it("scales to 0.9 centered on the logo at the last attempt", () => {
+  it("scales to 0.9 with no translation (centered on the whole logo) at the last attempt", () => {
     const result = computeZoomTransform(5, 6, focusPoint);
     expect(result.scale).toBeCloseTo(0.9);
-    expect(result.originXPercent).toBeCloseTo(50);
-    expect(result.originYPercent).toBeCloseTo(50);
+    expect(result.translateXPercent).toBeCloseTo(0);
+    expect(result.translateYPercent).toBeCloseTo(0);
   });
 
   it("interpolates linearly between the first and last attempt", () => {
     const result = computeZoomTransform(2, 6, focusPoint);
     // t = 2/5 = 0.4 -> scale = 5 + (0.9 - 5) * 0.4 = 3.36
     expect(result.scale).toBeCloseTo(3.36);
-    // originX = 30 + (50 - 30) * 0.4 = 38
-    expect(result.originXPercent).toBeCloseTo(38);
-    // originY = 70 + (50 - 70) * 0.4 = 62
-    expect(result.originYPercent).toBeCloseTo(62);
+    // effectiveX = 0.3 + (0.5-0.3)*0.4 = 0.38 -> translateX = (0.5-0.38)*100 = 12
+    expect(result.translateXPercent).toBeCloseTo(12);
+    // effectiveY = 0.7 + (0.5-0.7)*0.4 = 0.62 -> translateY = (0.5-0.62)*100 = -12
+    expect(result.translateYPercent).toBeCloseTo(-12);
   });
 
   it("does not divide by zero when maxAttempts is 1", () => {
     const result = computeZoomTransform(0, 1, focusPoint);
     expect(Number.isFinite(result.scale)).toBe(true);
-    expect(Number.isFinite(result.originXPercent)).toBe(true);
-    expect(Number.isFinite(result.originYPercent)).toBe(true);
+    expect(Number.isFinite(result.translateXPercent)).toBe(true);
+    expect(Number.isFinite(result.translateYPercent)).toBe(true);
   });
 });
 

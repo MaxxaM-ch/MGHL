@@ -37,12 +37,14 @@ export function computeZoomTransform(
   attemptIndex: number,
   maxAttempts: number,
   focusPoint: { x: number; y: number },
-): { scale: number; originXPercent: number; originYPercent: number } {
+): { scale: number; translateXPercent: number; translateYPercent: number } {
   const t = maxAttempts > 1 ? attemptIndex / (maxAttempts - 1) : 1;
   const scale = START_SCALE + (END_SCALE - START_SCALE) * t;
-  const originXPercent = (focusPoint.x + (0.5 - focusPoint.x) * t) * 100;
-  const originYPercent = (focusPoint.y + (0.5 - focusPoint.y) * t) * 100;
-  return { scale, originXPercent, originYPercent };
+  const effectiveX = focusPoint.x + (0.5 - focusPoint.x) * t;
+  const effectiveY = focusPoint.y + (0.5 - focusPoint.y) * t;
+  const translateXPercent = (0.5 - effectiveX) * 100;
+  const translateYPercent = (0.5 - effectiveY) * 100;
+  return { scale, translateXPercent, translateYPercent };
 }
 
 export function buildShareGrid(attemptCount: number, won: boolean): string {

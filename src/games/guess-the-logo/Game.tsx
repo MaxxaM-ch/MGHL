@@ -88,17 +88,18 @@ export default function Game() {
 
   const revealed = status !== "playing";
   const transform = revealed
-    ? { scale: 1, originXPercent: 50, originYPercent: 50 }
+    ? { scale: 1, translateXPercent: 0, translateYPercent: 0 }
     : computeZoomTransform(attempts.length, MAX_ATTEMPTS, focusPoint);
 
   return (
     <div className="guess-the-logo">
-      <LogoReveal team={target.abbrev} {...transform} />
+      <LogoReveal team={target.abbrev} alt={revealed ? target.name : "Logo mystère"} {...transform} />
 
       {status === "playing" && (
         <GuessInput
           options={options}
           onSubmit={handleGuess}
+          ariaLabel="Nom de l'équipe"
           placeholder={`Tentative ${attempts.length + 1} / ${MAX_ATTEMPTS}`}
         />
       )}
