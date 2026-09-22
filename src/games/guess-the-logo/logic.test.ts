@@ -47,6 +47,19 @@ describe("pickDailyFocusPoint", () => {
     const b = pickDailyFocusPoint("2026-09-21", "MTL", bounds);
     expect(a).not.toEqual(b);
   });
+
+  it("differs between two different dates for the same team", () => {
+    const a = pickDailyFocusPoint("2026-09-21", "TOR", bounds);
+    const b = pickDailyFocusPoint("2026-09-22", "TOR", bounds);
+    expect(a).not.toEqual(b);
+  });
+
+  it("resolves to the exact point when bounds have zero width and height", () => {
+    const pointBounds: ContentBounds = { x: 0.42, y: 0.17, width: 0, height: 0 };
+    const point = pickDailyFocusPoint("2026-09-21", "TOR", pointBounds);
+    expect(point.x).toBeCloseTo(0.42);
+    expect(point.y).toBeCloseTo(0.17);
+  });
 });
 
 describe("computeZoomTransform", () => {
@@ -82,6 +95,20 @@ describe("computeZoomTransform", () => {
     expect(Number.isFinite(result.translateXPercent)).toBe(true);
     expect(Number.isFinite(result.translateYPercent)).toBe(true);
   });
+
+  it("clamps to the final-attempt values when attemptIndex exceeds maxAttempts - 1", () => {
+    const result = computeZoomTransform(9, 6, focusPoint);
+    expect(result.scale).toBeCloseTo(0.9);
+    expect(result.translateXPercent).toBeCloseTo(0);
+    expect(result.translateYPercent).toBeCloseTo(0);
+  });
+
+  it("clamps to the first-attempt values when attemptIndex is negative", () => {
+    const result = computeZoomTransform(-3, 6, focusPoint);
+    expect(result.scale).toBe(5);
+    expect(result.translateXPercent).toBeCloseTo(20);
+    expect(result.translateYPercent).toBeCloseTo(-20);
+  });
 });
 
 describe("buildShareGrid", () => {
@@ -95,5 +122,9 @@ describe("buildShareGrid", () => {
 
   it("handles a first-attempt win", () => {
     expect(buildShareGrid(1, true)).toBe("🟩");
+  });
+
+  it("returns an empty string when there are no attempts", () => {
+    expect(buildShareGrid(0, false)).toBe("");
   });
 });

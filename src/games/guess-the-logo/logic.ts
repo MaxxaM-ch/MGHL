@@ -38,7 +38,7 @@ export function computeZoomTransform(
   maxAttempts: number,
   focusPoint: { x: number; y: number },
 ): { scale: number; translateXPercent: number; translateYPercent: number } {
-  const t = maxAttempts > 1 ? attemptIndex / (maxAttempts - 1) : 1;
+  const t = maxAttempts > 1 ? Math.min(Math.max(attemptIndex / (maxAttempts - 1), 0), 1) : 1;
   const scale = START_SCALE + (END_SCALE - START_SCALE) * t;
   const effectiveX = focusPoint.x + (0.5 - focusPoint.x) * t;
   const effectiveY = focusPoint.y + (0.5 - focusPoint.y) * t;

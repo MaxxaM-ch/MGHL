@@ -1,4 +1,3 @@
-// src/games/guess-the-logo/Game.tsx
 import { useEffect, useMemo, useState } from "react";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
 import LogoReveal from "./components/LogoReveal";
