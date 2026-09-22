@@ -6,6 +6,7 @@ import {
   buildShareGrid,
   getBlurLevel,
   getSaturationLevel,
+  needsDarkOnReveal,
   type ContentBounds,
 } from "./logic";
 
@@ -160,6 +161,16 @@ describe("getSaturationLevel", () => {
 
   it("clamps to zero when attemptCount is negative", () => {
     expect(getSaturationLevel(-3, 6)).toBe(0);
+  });
+});
+
+describe("needsDarkOnReveal", () => {
+  it("flags a team whose light logo has no light-colored parts to contrast against the dark reveal banner", () => {
+    expect(needsDarkOnReveal("TBL")).toBe(true);
+  });
+
+  it("does not flag a team whose light logo already contrasts against the dark reveal banner", () => {
+    expect(needsDarkOnReveal("TOR")).toBe(false);
   });
 });
 

@@ -66,6 +66,20 @@ export function getSaturationLevel(attemptCount: number, maxAttempts: number): n
   return (clamped / maxAttempts) * 100;
 }
 
+// Teams whose "light" logo variant has no light-colored fill at all, so it
+// nearly disappears against the reveal banner's dark background regardless
+// of the site's own light/dark theme (LogoReveal always uses the "dark",
+// usually-white variant for these instead). Found by auditing all 32
+// teams' fill colors: TBL's light logo is a single flat navy silhouette
+// (#00205b) with no white/bright accent, while every other team has at
+// least one light-colored fill that still reads on a dark background.
+// Re-audit if the NHL asset colors change.
+const LOW_CONTRAST_ON_DARK_BANNER = new Set(["TBL"]);
+
+export function needsDarkOnReveal(abbrev: string): boolean {
+  return LOW_CONTRAST_ON_DARK_BANNER.has(abbrev);
+}
+
 export function buildShareGrid(attemptCount: number, won: boolean): string {
   return Array.from({ length: attemptCount }, (_, i) => (won && i === attemptCount - 1 ? "🟩" : "🟥")).join("\n");
 }

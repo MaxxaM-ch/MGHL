@@ -1,4 +1,5 @@
 import { teamJerseyTextureUrl, teamLogoUrl, teamWireLogoUrl } from "../../../lib/team-logo";
+import { needsDarkOnReveal } from "../logic";
 import "../../../styles/components/guess-the-logo/logo-reveal.scss";
 
 interface LogoRevealProps {
@@ -62,18 +63,28 @@ export default function LogoReveal({
         style={zoomStyle}
       />
       <div className="logo-reveal__banner" style={bannerStyle} />
-      <img
-        className="logo-reveal__reveal-logo logo-reveal__reveal-logo--light"
-        src={teamLogoUrl(team, "light")}
-        alt=""
-        aria-hidden="true"
-      />
-      <img
-        className="logo-reveal__reveal-logo logo-reveal__reveal-logo--dark"
-        src={teamLogoUrl(team, "dark")}
-        alt=""
-        aria-hidden="true"
-      />
+      {needsDarkOnReveal(team) ? (
+        // The banner background is always dark, regardless of the site's own
+        // theme — some teams' light-variant logo has no light-colored part
+        // and would nearly disappear on it, so those always get the dark
+        // (usually white) variant here instead of following the site theme.
+        <img className="logo-reveal__reveal-logo" src={teamLogoUrl(team, "dark")} alt="" aria-hidden="true" />
+      ) : (
+        <>
+          <img
+            className="logo-reveal__reveal-logo logo-reveal__reveal-logo--light"
+            src={teamLogoUrl(team, "light")}
+            alt=""
+            aria-hidden="true"
+          />
+          <img
+            className="logo-reveal__reveal-logo logo-reveal__reveal-logo--dark"
+            src={teamLogoUrl(team, "dark")}
+            alt=""
+            aria-hidden="true"
+          />
+        </>
+      )}
       {name && <p className="logo-reveal__name">{name}</p>}
     </div>
   );
