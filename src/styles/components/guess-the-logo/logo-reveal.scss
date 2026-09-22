@@ -1,6 +1,14 @@
 @use "../../variables/colors" as *;
 @use "../../variables/spacing" as *;
 
+// Where the big reveal logo comes to rest after sliding in (see
+// @keyframes logo-reveal-slide-in below) — the team name's start position
+// is derived from this, so a future tweak to the logo's landing spot can't
+// silently break their alignment the way two independent magic numbers
+// could.
+$reveal-logo-landing-position: 22%;
+$reveal-name-start-position: $reveal-logo-landing-position + 6%;
+
 // Explicit width AND height on both this and the --revealed rule below —
 // like guess-the-player's player-reveal — rather than aspect-ratio or
 // max-width: none, neither of which reliably transitions (aspect-ratio
@@ -99,7 +107,7 @@
     opacity: 1;
   }
   100% {
-    left: 22%;
+    left: $reveal-logo-landing-position;
     opacity: 1;
   }
 }
@@ -107,10 +115,10 @@
 .logo-reveal__name {
   position: absolute;
   top: 50%;
-  // Starts just left of where the logo comes to rest (22%), so the text
-  // sits directly under the logo's actual travel path (50% -> 22%) instead
+  // Starts just right of where the logo comes to rest, so the text sits
+  // directly under the logo's actual travel path (50% -> landing) instead
   // of off to the side where the logo never passes over it.
-  left: 28%;
+  left: $reveal-name-start-position;
   right: $p-m-16;
   transform: translateY(-50%);
   margin: 0;

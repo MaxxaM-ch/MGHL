@@ -28,8 +28,18 @@ export default function LogoReveal({
     transform: `scale(${scale}) translate(${translateXPercent}%, ${translateYPercent}%)`,
     filter: `blur(${blurPx}px) saturate(${saturationPercent}%)`,
   };
+
+  // Four stacked layers, back-to-front. Order matters: it must match the
+  // backgroundSize list below position-for-position, since CSS has no way
+  // to name a background layer — keep both lists in sync if a layer is
+  // added, removed, or reordered.
+  const bannerTopScrim = "radial-gradient(50% 100% at 50% 0%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.65) 100%)";
+  const bannerWireLogo = `url(${teamWireLogoUrl(team)}) center no-repeat`;
+  const bannerBottomScrim = "linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0, 1) 100%)";
+  const bannerJerseyTexture = `url(${teamJerseyTextureUrl(team)}) repeat`;
+
   const bannerStyle = {
-    background: `radial-gradient(50% 100% at 50% 0%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.65) 100%), url(${teamWireLogoUrl(team)}) center no-repeat, linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0, 1) 100%), url(${teamJerseyTextureUrl(team)}) repeat`,
+    background: [bannerTopScrim, bannerWireLogo, bannerBottomScrim, bannerJerseyTexture].join(", "),
     // Setting the `background` shorthand inline resets background-size to
     // its initial value for this element, regardless of what the stylesheet
     // says — it has to be set here too, alongside the shorthand, not in

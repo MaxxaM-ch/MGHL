@@ -28,11 +28,14 @@ const MAX_ATTEMPTS = 6;
 // appears already-enlarged instead of animating. guess-the-player has the
 // same delay (REVEAL_DELAY_MS) for the same reason.
 const REVEAL_DELAY_MS = 400;
-// Lets the full reveal choreography (logo-reveal.scss: box grows, banner
-// fades in, big logo appears then slides left, team name wipes in — the
-// last of these starts at 1s and takes 1.1s, ending at 2.1s) finish
-// playing before the result modal covers the reveal.
-const MODAL_DELAY_MS = 2400;
+// The team-name wipe (logo-reveal.scss: logo-reveal-name-wipe) is the last
+// step of the reveal choreography (box grows, banner fades in, big logo
+// slides in, then the name wipes in) and the one the modal must wait out.
+// Keep these two in sync with that animation's own delay/duration, or the
+// modal will pop up mid-wipe.
+const NAME_WIPE_START_MS = 1000;
+const NAME_WIPE_DURATION_MS = 1100;
+const MODAL_DELAY_MS = NAME_WIPE_START_MS + NAME_WIPE_DURATION_MS + 300;
 
 export default function Game() {
   const [target, setTarget] = useState<TeamLogoEntry | null>(null);
