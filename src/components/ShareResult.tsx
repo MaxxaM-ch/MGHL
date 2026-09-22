@@ -1,29 +1,24 @@
 import { useState } from "react";
-import { buildShareGrid } from "../logic";
-import "../../../styles/components/guess-the-logo/share-result.scss";
+import "../styles/components/shared/share-result.scss";
 
 interface ShareResultProps {
   gameTitle: string;
-  attemptCount: number;
-  won: boolean;
-  maxAttempts: number;
+  scoreLine: string;
+  grid: string;
   showTitle?: boolean;
   showCopyButton?: boolean;
 }
 
 export default function ShareResult({
   gameTitle,
-  attemptCount,
-  won,
-  maxAttempts,
+  scoreLine,
+  grid,
   showTitle = true,
   showCopyButton = true,
 }: ShareResultProps) {
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
 
-  const scoreLine = won ? `${attemptCount}/${maxAttempts}` : `X/${maxAttempts}`;
-  const grid = buildShareGrid(attemptCount, won);
   const shareText = `${gameTitle} ${scoreLine}\n${grid}`;
 
   async function handleCopy() {

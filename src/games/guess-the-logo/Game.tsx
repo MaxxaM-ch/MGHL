@@ -1,14 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
+import ResultModal from "../../components/ResultModal";
 import AttemptHistory from "./components/AttemptHistory";
 import LogoReveal from "./components/LogoReveal";
-import ResultModal from "./components/ResultModal";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import { formatDateKey, pickDailyItem } from "../../lib/daily-puzzle/seed";
 import { deriveGuessStatus, type GuessStatus } from "../../lib/daily-puzzle/status";
 import { TEAM_LOGOS, type TeamLogoEntry } from "../../data/curated/team-logos";
-import { computeZoomTransform, getBlurLevel, getSaturationLevel, isWinningGuess, pickDailyFocusPoint } from "./logic";
+import {
+  buildShareGrid,
+  computeZoomTransform,
+  getBlurLevel,
+  getSaturationLevel,
+  isWinningGuess,
+  pickDailyFocusPoint,
+} from "./logic";
 import "../../styles/components/guess-the-logo/guess-the-logo.scss";
 
 const GAME_ID = "guess-the-logo";
@@ -139,14 +146,13 @@ export default function Game() {
 
       {modalReady && !resultModalDismissed && (
         <ResultModal
-          won={status === "won"}
           message={
             status === "won"
               ? `Trouvé en ${attempts.length} tentative${attempts.length > 1 ? "s" : ""} !`
               : `Perdu ! C'était ${target.name}.`
           }
-          attemptCount={attempts.length}
-          maxAttempts={MAX_ATTEMPTS}
+          scoreLine={status === "won" ? `${attempts.length}/${MAX_ATTEMPTS}` : `X/${MAX_ATTEMPTS}`}
+          grid={buildShareGrid(attempts.length, status === "won")}
           gameId={GAME_ID}
           gameTitle="Devine le logo"
           onClose={() => setResultModalDismissed(true)}

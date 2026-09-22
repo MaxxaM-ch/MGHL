@@ -1,3 +1,5 @@
+import { hashString } from "../../lib/hash";
+
 export function isWinningGuess(guess: string, target: string): boolean {
   return guess === target;
 }
@@ -10,11 +12,7 @@ export interface ContentBounds {
 }
 
 function hashToUnitFloat(input: string): number {
-  let hash = 0;
-  for (let i = 0; i < input.length; i++) {
-    hash = (hash * 31 + input.charCodeAt(i)) >>> 0;
-  }
-  return (hash % 10000) / 10000;
+  return (hashString(input) % 10000) / 10000;
 }
 
 export function pickDailyFocusPoint(

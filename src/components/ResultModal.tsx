@@ -1,28 +1,19 @@
 import { useEffect } from "react";
 import ShareResult from "./ShareResult";
-import StreakBadge from "../../../components/StreakBadge";
-import CountdownTimer from "../../../components/CountdownTimer";
-import "../../../styles/components/guess-the-logo/result-modal.scss";
+import StreakBadge from "./StreakBadge";
+import CountdownTimer from "./CountdownTimer";
+import "../styles/components/shared/result-modal.scss";
 
 interface ResultModalProps {
-  won: boolean;
   message: string;
-  attemptCount: number;
-  maxAttempts: number;
+  scoreLine: string;
+  grid: string;
   gameId: string;
   gameTitle: string;
   onClose: () => void;
 }
 
-export default function ResultModal({
-  won,
-  message,
-  attemptCount,
-  maxAttempts,
-  gameId,
-  gameTitle,
-  onClose,
-}: ResultModalProps) {
+export default function ResultModal({ message, scoreLine, grid, gameId, gameTitle, onClose }: ResultModalProps) {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
@@ -46,14 +37,7 @@ export default function ResultModal({
         <p className="result-modal__message" id="result-modal-message">
           {message}
         </p>
-        <ShareResult
-          gameTitle={gameTitle}
-          attemptCount={attemptCount}
-          won={won}
-          maxAttempts={maxAttempts}
-          showTitle={false}
-          showCopyButton={false}
-        />
+        <ShareResult gameTitle={gameTitle} scoreLine={scoreLine} grid={grid} showTitle={false} showCopyButton={false} />
         <CountdownTimer />
         <StreakBadge gameId={gameId} />
       </div>

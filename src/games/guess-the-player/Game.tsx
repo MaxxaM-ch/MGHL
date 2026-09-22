@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import AttemptFeedbackRow, { FeedbackGridHeader } from "./components/AttemptFeedbackRow";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
+import ResultModal from "../../components/ResultModal";
 import ProgressiveReveal from "./components/ProgressiveReveal";
-import ResultModal from "./components/ResultModal";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import { formatDateKey, pickDailyItem } from "../../lib/daily-puzzle/seed";
 import { deriveGuessStatus, type GuessStatus } from "../../lib/daily-puzzle/status";
 import type { NormalizedPlayer } from "../../lib/nhl-api/types";
-import { compareGuess, getBlurLevel, isWinningGuess, type GuessFeedback } from "./logic";
+import { buildShareGrid, compareGuess, getBlurLevel, isWinningGuess, type GuessFeedback } from "./logic";
 import "../../styles/components/guess-the-player/guess-the-player.scss";
 
 const GAME_ID = "guess-the-player";
@@ -161,14 +161,13 @@ export default function Game() {
 
       {modalReady && !resultModalDismissed && (
         <ResultModal
-          won={status === "won"}
           message={
             status === "won"
               ? `Trouvé en ${attempts.length} tentative${attempts.length > 1 ? "s" : ""} !`
               : `Perdu ! Le joueur était ${playerLabel(target)}.`
           }
-          attempts={attempts.map((a) => a.feedback)}
-          maxAttempts={MAX_ATTEMPTS}
+          scoreLine={status === "won" ? `${attempts.length}/${MAX_ATTEMPTS}` : `X/${MAX_ATTEMPTS}`}
+          grid={buildShareGrid(attempts.map((a) => a.feedback))}
           gameId={GAME_ID}
           gameTitle="Devine le joueur"
           onClose={() => setResultModalDismissed(true)}
