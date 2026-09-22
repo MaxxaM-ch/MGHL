@@ -3,7 +3,18 @@ function hashDateString(dateString: string): number {
   for (let i = 0; i < dateString.length; i++) {
     hash = (hash * 31 + dateString.charCodeAt(i)) >>> 0;
   }
-  return hash;
+
+  // Murmur3-style finalizer: the polynomial hash above changes by a small,
+  // predictable amount between consecutive dates, which skews the modulo
+  // result badly on small arrays. This avalanches the bits so nearby inputs
+  // produce unrelated outputs.
+  hash ^= hash >>> 16;
+  hash = Math.imul(hash, 0x85ebca6b) >>> 0;
+  hash ^= hash >>> 13;
+  hash = Math.imul(hash, 0xc2b2ae35) >>> 0;
+  hash ^= hash >>> 16;
+
+  return hash >>> 0;
 }
 
 // Always UTC, not local time: this is the shared day boundary used to pick
