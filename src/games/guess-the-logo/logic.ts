@@ -45,7 +45,10 @@ export function computeZoomTransform(
   return { scale, translateXPercent, translateYPercent };
 }
 
-const MAX_BLUR_PX = 24;
+// Lowered from an earlier 24px — at max blur a small logo box was nearly
+// unrecognizable even on the last attempt's approach, making the early
+// guesses feel like guessing blind rather than a fading hint.
+const MAX_BLUR_PX = 10;
 
 // Uses attemptCount (0 before any guess), not attemptIndex — unlike
 // computeZoomTransform, there's no "current attempt slot" here, just how
@@ -58,12 +61,14 @@ export function getBlurLevel(attemptCount: number, maxAttempts: number): number 
   return MAX_BLUR_PX * remainingRatio;
 }
 
-// Fully grayscale before any guess, ramping up to full color by the last
-// attempt — removes the "distinctive team color" shortcut alongside the
-// blur, so an early guess can't be based on color alone.
+// Never fully grayscale, even before the first guess — combined with the
+// max blur, 0% saturation made the very first attempt feel unplayable
+// rather than just hard. Still ramps up to full color by the last attempt.
+const MIN_SATURATION_PERCENT = 35;
+
 export function getSaturationLevel(attemptCount: number, maxAttempts: number): number {
   const clamped = Math.min(Math.max(attemptCount, 0), maxAttempts);
-  return (clamped / maxAttempts) * 100;
+  return MIN_SATURATION_PERCENT + (100 - MIN_SATURATION_PERCENT) * (clamped / maxAttempts);
 }
 
 // Teams whose "light" logo variant has no light-colored fill at all, so it
