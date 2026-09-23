@@ -1,0 +1,33 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+.reveal-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $p-m-12;
+  margin-top: $p-m-16;
+  font-family: $font-display;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  animation: reveal-badge-pop 0.3s ease;
+}
+
+.reveal-badge--correct {
+  color: $feedback-exact;
+}
+
+.reveal-badge--wrong {
+  color: $feedback-wrong;
+}
+
+@keyframes reveal-badge-pop {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
