@@ -4,6 +4,7 @@ import AnswerControls from "./components/AnswerControls";
 import ClipPlayer, { type ClipPlayerHandle } from "./components/ClipPlayer";
 import RevealBadge from "./components/RevealBadge";
 import NextClipButton from "./components/NextClipButton";
+import SoundToggle from "./components/SoundToggle";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import { formatDateKey, pickDailyItems } from "../../lib/daily-puzzle/seed";
@@ -39,6 +40,7 @@ function decodeToken(token: string): { youtubeId: string; answer: Answer } | nul
 
 export default function Game() {
   const [started, setStarted] = useState(false);
+  const [wantsSound, setWantsSound] = useState(false);
   const [clips, setClips] = useState<ArretOuButClip[] | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("playing");
@@ -137,9 +139,12 @@ export default function Game() {
   if (!started) {
     return (
       <div className="arret-ou-but">
-        <button type="button" className="arret-ou-but__start" onClick={() => setStarted(true)}>
-          Commencer
-        </button>
+        <div className="arret-ou-but__start-choices">
+          <SoundToggle enabled={wantsSound} onChange={setWantsSound} />
+          <button type="button" className="arret-ou-but__start" onClick={() => setStarted(true)}>
+            Commencer
+          </button>
+        </div>
       </div>
     );
   }
@@ -160,6 +165,7 @@ export default function Game() {
             debut={currentClip.debut}
             gel={currentClip.gel}
             fin={computeRevealStopSecond(currentClip.fin)}
+            wantsSound={wantsSound}
             onReachedGel={handleReachedGel}
             onError={handleError}
           />

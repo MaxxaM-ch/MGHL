@@ -8,6 +8,12 @@
   gap: $p-m-16;
 }
 
+.arret-ou-but__start-choices {
+  display: flex;
+  align-items: center;
+  gap: $p-m-24;
+}
+
 .arret-ou-but__start {
   @include btn-accent;
   border: none;

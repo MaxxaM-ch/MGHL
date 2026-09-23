@@ -13,12 +13,13 @@ interface ClipPlayerProps {
   debut: number;
   gel: number;
   fin: number;
+  wantsSound: boolean;
   onReachedGel: () => void;
   onError: () => void;
 }
 
 const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPlayer(
-  { youtubeId, debut, gel, fin, onReachedGel, onError },
+  { youtubeId, debut, gel, fin, wantsSound, onReachedGel, onError },
   ref,
 ) {
   const mountId = `clip-player-${useId().replace(/:/g, "")}`;
@@ -26,7 +27,10 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
   const targetRef = useRef(gel);
   const stageRef = useRef<"gel" | "fin">("gel");
   const reachedRef = useRef(false);
-  const [muted, setMuted] = useState(true);
+  // Starts already "unmuted" (no button) only if the player asked for sound
+  // upfront; the async check below flips it back to muted if that attempt
+  // was silently blocked, so the manual button stays a reliable fallback.
+  const [muted, setMuted] = useState(!wantsSound);
 
   useImperativeHandle(ref, () => ({
     resume() {
@@ -48,7 +52,18 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
     createYouTubePlayer(mountId, onError).then((player) => {
       if (cancelled) return;
       playerRef.current = player;
-      player.mute();
+      if (wantsSound) {
+        player.unMute();
+        // The browser sometimes silently ignores this if the click that
+        // started the round is judged too far removed by the time this
+        // promise resolves (script load + iframe handshake) — verify it
+        // actually took, and fall back to the manual button if not.
+        setTimeout(() => {
+          if (!cancelled && player.isMuted()) setMuted(true);
+        }, 500);
+      } else {
+        player.mute();
+      }
     });
 
     const interval = setInterval(() => {

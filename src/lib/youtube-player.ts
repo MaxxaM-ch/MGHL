@@ -10,6 +10,7 @@ export interface YouTubePlayer {
   loadVideoById(videoId: string, startSeconds: number): void;
   mute(): void;
   unMute(): void;
+  isMuted(): boolean;
   destroy(): void;
 }
 
