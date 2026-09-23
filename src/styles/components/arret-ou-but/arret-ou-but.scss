@@ -1,0 +1,21 @@
+@use "../../variables/spacing" as *;
+@use "../../variables/mixins" as *;
+
+.arret-ou-but {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $p-m-16;
+}
+
+.arret-ou-but__start {
+  @include btn-accent;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.arret-ou-but__error {
+  color: var(--text);
+  opacity: 0.75;
+  margin: 0;
+}

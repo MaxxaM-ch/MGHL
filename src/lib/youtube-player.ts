@@ -6,8 +6,14 @@ export interface YouTubePlayer {
   pauseVideo(): void;
   seekTo(seconds: number, allowSeekAhead: boolean): void;
   getCurrentTime(): number;
+  getPlayerState(): number;
+  mute(): void;
   destroy(): void;
 }
+
+// YT.PlayerState.PLAYING. Not using the full enum since nothing else here
+// needs it.
+export const PLAYER_STATE_PLAYING = 1;
 
 interface YouTubePlayerReadyEvent {
   target: YouTubePlayer;
@@ -34,8 +40,11 @@ interface YouTubePlayerConstructorOptions {
 declare global {
   interface Window {
     YT?: {
+      // The constructor's first argument must be an element id (string),
+      // not an element reference — passing an element directly is
+      // silently mishandled by the API's internal bootstrap code.
       Player: new (
-        element: HTMLElement,
+        elementId: string,
         options: YouTubePlayerConstructorOptions,
       ) => YouTubePlayer;
     };
@@ -70,13 +79,13 @@ function loadYouTubeApi(): Promise<void> {
 }
 
 export async function createYouTubePlayer(
-  element: HTMLElement,
+  elementId: string,
   videoId: string,
   onError: () => void,
 ): Promise<YouTubePlayer> {
   await loadYouTubeApi();
   return new Promise((resolve) => {
-    new window.YT!.Player(element, {
+    new window.YT!.Player(elementId, {
       videoId,
       host: PRIVACY_HOST,
       playerVars: {
