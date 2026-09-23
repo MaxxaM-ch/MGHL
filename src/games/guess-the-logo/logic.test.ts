@@ -122,11 +122,11 @@ describe("computeZoomTransform", () => {
 
 describe("getBlurLevel", () => {
   it("is at its maximum before any attempt", () => {
-    expect(getBlurLevel(0, 6)).toBe(24);
+    expect(getBlurLevel(0, 6)).toBe(10);
   });
 
   it("decreases linearly between the first and last attempt", () => {
-    expect(getBlurLevel(3, 6)).toBe(12);
+    expect(getBlurLevel(3, 6)).toBe(5);
   });
 
   it("reaches zero once all attempts are used", () => {
@@ -138,17 +138,17 @@ describe("getBlurLevel", () => {
   });
 
   it("clamps to the maximum when attemptCount is negative", () => {
-    expect(getBlurLevel(-3, 6)).toBe(24);
+    expect(getBlurLevel(-3, 6)).toBe(10);
   });
 });
 
 describe("getSaturationLevel", () => {
-  it("is fully desaturated before any attempt", () => {
-    expect(getSaturationLevel(0, 6)).toBe(0);
+  it("is only partly desaturated before any attempt, not fully grayscale", () => {
+    expect(getSaturationLevel(0, 6)).toBe(35);
   });
 
   it("increases linearly between the first and last attempt", () => {
-    expect(getSaturationLevel(3, 6)).toBe(50);
+    expect(getSaturationLevel(3, 6)).toBeCloseTo(67.5);
   });
 
   it("reaches full saturation once all attempts are used", () => {
@@ -159,8 +159,8 @@ describe("getSaturationLevel", () => {
     expect(getSaturationLevel(9, 6)).toBe(100);
   });
 
-  it("clamps to zero when attemptCount is negative", () => {
-    expect(getSaturationLevel(-3, 6)).toBe(0);
+  it("clamps to the minimum when attemptCount is negative", () => {
+    expect(getSaturationLevel(-3, 6)).toBe(35);
   });
 });
 
