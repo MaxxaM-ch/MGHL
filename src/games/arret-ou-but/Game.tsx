@@ -152,12 +152,9 @@ export default function Game() {
       {phase !== "done" && currentClip && (
         <>
           <ClipPlayer
-            // Keyed on the clip's position in the round, not its
-            // youtubeId: two clips can legitimately share the same
-            // underlying video (e.g. one long broadcast clip curated as
-            // both a "but" and an "arret" entry at different timestamps),
-            // and this must still force a fresh player mount between them.
-            key={currentIndex}
+            // No key: this is one persistent player for the whole round,
+            // not remounted per clip (see ClipPlayer's own comment) —
+            // remounting would also throw away an already-unmuted state.
             ref={clipPlayerRef}
             youtubeId={currentClip.youtubeId}
             debut={currentClip.debut}

@@ -7,7 +7,9 @@ export interface YouTubePlayer {
   seekTo(seconds: number, allowSeekAhead: boolean): void;
   getCurrentTime(): number;
   getPlayerState(): number;
+  loadVideoById(videoId: string, startSeconds: number): void;
   mute(): void;
+  unMute(): void;
   destroy(): void;
 }
 
@@ -20,7 +22,6 @@ interface YouTubePlayerReadyEvent {
 }
 
 interface YouTubePlayerConstructorOptions {
-  videoId: string;
   host: string;
   playerVars: {
     controls: 0 | 1;
@@ -78,15 +79,16 @@ function loadYouTubeApi(): Promise<void> {
   return apiLoadPromise;
 }
 
-export async function createYouTubePlayer(
-  elementId: string,
-  videoId: string,
-  onError: () => void,
-): Promise<YouTubePlayer> {
+// Constructed without a videoId: this player is reused for the whole
+// round (a single iframe, kept alive across clips) rather than recreated
+// per clip — the caller loads each clip's video via loadVideoById() once
+// this resolves. Reusing one instance is also what lets a single "unmute"
+// click (a real user gesture, unlike a plain API call) stay in effect for
+// every later clip in the round, since it's the same player throughout.
+export async function createYouTubePlayer(elementId: string, onError: () => void): Promise<YouTubePlayer> {
   await loadYouTubeApi();
   return new Promise((resolve) => {
     new window.YT!.Player(elementId, {
-      videoId,
       host: PRIVACY_HOST,
       playerVars: {
         controls: 0,
