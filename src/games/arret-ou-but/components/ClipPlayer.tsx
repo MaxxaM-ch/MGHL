@@ -94,6 +94,7 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
   return (
     <div className="clip-player">
       <div id={mountId} />
+      <div className="clip-player__blocker" />
     </div>
   );
 });

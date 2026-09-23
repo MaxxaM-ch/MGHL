@@ -10,8 +10,25 @@
   overflow: hidden;
   background: #000;
 
+  // Oversized and centered, then clipped by the wrapper's overflow:hidden —
+  // pushes YouTube's own paused-state chrome (title bar along the top,
+  // suggested-video card in a corner) outside the visible crop, since
+  // those sit near the edges while the actual video content is centered.
   iframe {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 135%;
+    height: 135%;
+    transform: translate(-50%, -50%);
   }
+}
+
+// Sits on top of the iframe and swallows clicks, so the player can never be
+// paused/played/seeked by clicking the video itself — the game's own
+// controls are the only way to interact with it.
+.clip-player__blocker {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
