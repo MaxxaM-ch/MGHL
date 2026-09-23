@@ -1,0 +1,48 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+@use "../../variables/mixins" as *;
+
+.answer-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $p-m-16;
+  margin-top: $p-m-16;
+}
+
+.answer-controls__timer {
+  font-family: $font-display;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.answer-controls__choices {
+  display: flex;
+  gap: $p-m-12;
+}
+
+.answer-controls__choice {
+  padding: $p-m-12 $p-m-24;
+  border-radius: $radius-8;
+  border: 2px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: $font-body;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.answer-controls__choice--selected {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.12);
+}
+
+.answer-controls__validate {
+  @include btn-accent;
+  border: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
