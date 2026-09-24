@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildShareGrid, computeRevealStopSecond, isCorrectGuess } from "./logic";
+import { buildShareGrid, computeNextButtonDurationMs, isCorrectGuess } from "./logic";
 
 describe("isCorrectGuess", () => {
   it("is correct when the answer matches the clip's response", () => {
@@ -25,12 +25,13 @@ describe("buildShareGrid", () => {
   });
 });
 
-describe("computeRevealStopSecond", () => {
-  it("stops one second before the clip's resolution timestamp", () => {
-    expect(computeRevealStopSecond(21)).toBe(20);
+describe("computeNextButtonDurationMs", () => {
+  it("converts the guessReveal-to-fin gap into milliseconds", () => {
+    expect(computeNextButtonDurationMs(25, 28)).toBe(3000);
   });
 
-  it("never goes negative for a clip resolving in the first second", () => {
-    expect(computeRevealStopSecond(0)).toBe(0);
+  it("never goes negative if fin is at or before guessReveal", () => {
+    expect(computeNextButtonDurationMs(25, 25)).toBe(0);
+    expect(computeNextButtonDurationMs(25, 24)).toBe(0);
   });
 });

@@ -12,21 +12,27 @@ interface ClipPlayerProps {
   youtubeId: string;
   debut: number;
   gel: number;
+  guessReveal: number;
   fin: number;
   wantsSound: boolean;
   onReachedGel: () => void;
+  onReachedGuessReveal: () => void;
   onError: () => void;
 }
 
 const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPlayer(
-  { youtubeId, debut, gel, fin, wantsSound, onReachedGel, onError },
+  { youtubeId, debut, gel, guessReveal, fin, wantsSound, onReachedGel, onReachedGuessReveal, onError },
   ref,
 ) {
   const mountId = `clip-player-${useId().replace(/:/g, "")}`;
   const playerRef = useRef<YouTubePlayer | null>(null);
-  const targetRef = useRef(gel);
-  const stageRef = useRef<"gel" | "fin">("gel");
-  const reachedRef = useRef(false);
+  const gelTargetRef = useRef(gel);
+  const guessRevealTargetRef = useRef(guessReveal);
+  const finTargetRef = useRef(fin);
+  const stageRef = useRef<"gel" | "revealing">("gel");
+  const gelReachedRef = useRef(false);
+  const guessRevealReachedRef = useRef(false);
+  const finReachedRef = useRef(false);
   // Starts already "unmuted" (no button) only if the player asked for sound
   // upfront; the async check below flips it back to muted if that attempt
   // was silently blocked, so the manual button stays a reliable fallback.
@@ -34,9 +40,9 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
 
   useImperativeHandle(ref, () => ({
     resume() {
-      stageRef.current = "fin";
-      targetRef.current = fin;
-      reachedRef.current = false;
+      stageRef.current = "revealing";
+      guessRevealReachedRef.current = false;
+      finReachedRef.current = false;
       playerRef.current?.playVideo();
     },
   }));
@@ -68,7 +74,7 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
 
     const interval = setInterval(() => {
       const player = playerRef.current;
-      if (!player || reachedRef.current) return;
+      if (!player) return;
       // The very first playVideo() call right after onReady/loadVideoById
       // is unreliable — the player accepts it but silently stays paused (a
       // known IFrame API timing quirk). Keep nudging it every tick until
@@ -76,11 +82,31 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
       if (player.getPlayerState() !== PLAYER_STATE_PLAYING) {
         player.playVideo();
       }
-      if (player.getCurrentTime() >= targetRef.current) {
-        reachedRef.current = true;
+
+      if (stageRef.current === "gel") {
+        if (gelReachedRef.current) return;
+        if (player.getCurrentTime() >= gelTargetRef.current) {
+          gelReachedRef.current = true;
+          player.pauseVideo();
+          player.seekTo(gelTargetRef.current, true);
+          onReachedGel();
+        }
+        return;
+      }
+
+      // stage === "revealing": plays straight through from gel to fin, no
+      // pause at guessReveal — only a callback fires there so the parent
+      // can show the badge and start the "Suivant" button while the clip
+      // keeps showing the actual outcome, instead of freezing right as it
+      // happens.
+      if (!guessRevealReachedRef.current && player.getCurrentTime() >= guessRevealTargetRef.current) {
+        guessRevealReachedRef.current = true;
+        onReachedGuessReveal();
+      }
+      if (!finReachedRef.current && player.getCurrentTime() >= finTargetRef.current) {
+        finReachedRef.current = true;
         player.pauseVideo();
-        player.seekTo(targetRef.current, true);
-        if (stageRef.current === "gel") onReachedGel();
+        player.seekTo(finTargetRef.current, true);
       }
     }, POLL_INTERVAL_MS);
 
@@ -96,8 +122,12 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
   // the first one (retried until the player above finishes initializing).
   useEffect(() => {
     stageRef.current = "gel";
-    targetRef.current = gel;
-    reachedRef.current = false;
+    gelTargetRef.current = gel;
+    guessRevealTargetRef.current = guessReveal;
+    finTargetRef.current = fin;
+    gelReachedRef.current = false;
+    guessRevealReachedRef.current = false;
+    finReachedRef.current = false;
 
     let cancelled = false;
     const tryLoad = () => {
@@ -114,7 +144,7 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
     return () => {
       cancelled = true;
     };
-  }, [youtubeId, debut, gel]);
+  }, [youtubeId, debut, gel, guessReveal, fin]);
 
   function handleUnmute() {
     playerRef.current?.unMute();

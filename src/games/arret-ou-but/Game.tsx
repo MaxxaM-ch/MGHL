@@ -8,16 +8,15 @@ import SoundToggle from "./components/SoundToggle";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import { formatDateKey, pickDailyItems } from "../../lib/daily-puzzle/seed";
-import { buildShareGrid, computeRevealStopSecond, isCorrectGuess, type Answer } from "./logic";
+import { buildShareGrid, computeNextButtonDurationMs, isCorrectGuess, type Answer } from "./logic";
 import { CLIPS, type ArretOuButClip } from "../../data/curated/arret-ou-but-clips";
 import "../../styles/components/arret-ou-but/arret-ou-but.scss";
 
 const GAME_ID = "arret-ou-but";
 const CLIPS_PER_ROUND = 5;
-const REVEAL_DELAY_MS = 2000;
 const MODAL_DELAY_MS = 1500;
 
-type Phase = "playing" | "answering" | "revealing" | "error" | "next" | "done";
+type Phase = "playing" | "answering" | "revealing" | "error" | "done";
 
 interface ClipResult {
   youtubeId: string;
@@ -45,6 +44,11 @@ export default function Game() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("playing");
   const [selectedAnswer, setSelectedAnswer] = useState<Answer>("none");
+  // True once the clip has reached its real resolution moment (guessReveal)
+  // during the "revealing" phase — gates the badge and the "Suivant"
+  // button, which only appear once the outcome has actually played out on
+  // screen, not the instant the answer was submitted.
+  const [revealed, setRevealed] = useState(false);
   const [results, setResults] = useState<ClipResult[]>([]);
   const [modalReady, setModalReady] = useState(false);
   const [resultModalDismissed, setResultModalDismissed] = useState(false);
@@ -85,34 +89,38 @@ export default function Game() {
     setPhase("answering");
   }, []);
 
+  const handleReachedGuessReveal = useCallback(() => {
+    setRevealed(true);
+  }, []);
+
   const handleError = useCallback(() => {
     setPhase("error");
   }, []);
 
   function handleAnswerSubmit(answer: Answer | null) {
     setSelectedAnswer(answer ?? "none");
+    setRevealed(false);
     setPhase("revealing");
     clipPlayerRef.current?.resume();
   }
 
   const currentClip = clips?.[currentIndex] ?? null;
 
+  // Fires exactly once per reveal (guarded by `revealed`, reset to false at
+  // every new submission) — correctness is already fully determined at
+  // submission time, so this can record the result as soon as the badge is
+  // shown, without waiting for the clip to finish playing its aftermath.
   useEffect(() => {
-    if (phase !== "revealing" || !currentClip) return;
-    const timer = setTimeout(() => {
-      const correct = isCorrectGuess(selectedAnswer, currentClip.reponse);
-      const nextResults = [...results, { youtubeId: currentClip.youtubeId, answer: selectedAnswer, correct }];
-      setResults(nextResults);
-      saveDailyProgress(GAME_ID, formatDateKey(new Date()), nextResults.map(encodeToken));
-      setPhase("next");
-    }, REVEAL_DELAY_MS);
-    return () => clearTimeout(timer);
-    // Deliberately keyed on phase only: currentClip/selectedAnswer/results
-    // are read at fire time on purpose (this timer represents "2s after
-    // this specific submission", not a value that should restart if
-    // something else re-renders the component in between).
+    if (!revealed || !currentClip) return;
+    const correct = isCorrectGuess(selectedAnswer, currentClip.reponse);
+    const nextResults = [...results, { youtubeId: currentClip.youtubeId, answer: selectedAnswer, correct }];
+    // Guarded by `revealed`, reset to false at every submission before it
+    // can flip true again, so this can't cascade into a render loop.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setResults(nextResults);
+    saveDailyProgress(GAME_ID, formatDateKey(new Date()), nextResults.map(encodeToken));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
+  }, [revealed]);
 
   function handleNext() {
     if (!clips) return;
@@ -125,6 +133,7 @@ export default function Game() {
     }
     setCurrentIndex(nextIndex);
     setSelectedAnswer("none");
+    setRevealed(false);
     setPhase("playing");
   }
 
@@ -164,25 +173,32 @@ export default function Game() {
             youtubeId={currentClip.youtubeId}
             debut={currentClip.debut}
             gel={currentClip.gel}
-            fin={computeRevealStopSecond(currentClip.fin)}
+            guessReveal={currentClip.guessReveal}
+            fin={currentClip.fin}
             wantsSound={wantsSound}
             onReachedGel={handleReachedGel}
+            onReachedGuessReveal={handleReachedGuessReveal}
             onError={handleError}
           />
 
           {phase === "answering" && <AnswerControls onSubmit={handleAnswerSubmit} />}
 
-          {phase === "revealing" && <RevealBadge correct={isCorrectGuess(selectedAnswer, currentClip.reponse)} />}
+          {phase === "revealing" && revealed && (
+            <>
+              <RevealBadge correct={isCorrectGuess(selectedAnswer, currentClip.reponse)} />
+              <NextClipButton
+                onNext={handleNext}
+                label={isLastClip ? "Voir le score" : "Suivant"}
+                fillDurationMs={computeNextButtonDurationMs(currentClip.guessReveal, currentClip.fin)}
+              />
+            </>
+          )}
 
           {phase === "error" && (
             <>
               <p className="arret-ou-but__error">{"Ce clip n'est plus disponible."}</p>
               <NextClipButton onNext={handleNext} label={isLastClip ? "Voir le score" : "Suivant"} />
             </>
-          )}
-
-          {phase === "next" && (
-            <NextClipButton onNext={handleNext} label={isLastClip ? "Voir le score" : "Suivant"} />
           )}
         </>
       )}

@@ -8,10 +8,11 @@ export function buildShareGrid(results: boolean[]): string {
   return results.map((correct) => (correct ? "✅" : "❌")).join("");
 }
 
-// The clip resumes from "gel" on submission and plays until just before its
-// real resolution, so the reveal badge (which appears on a fixed 2s timer,
-// independent of this) never gets upstaged by the video itself showing the
-// outcome first.
-export function computeRevealStopSecond(fin: number): number {
-  return Math.max(fin - 1, 0);
+// The clip resumes from "gel" on submission and plays uninterrupted through
+// "guessReveal" (the real resolution moment) to "fin" — the "Suivant"
+// button's fill animation is timed to this exact gap, so it finishes right
+// as the clip's own aftermath footage runs out, instead of an arbitrary
+// fixed duration disconnected from what's actually on screen.
+export function computeNextButtonDurationMs(guessReveal: number, fin: number): number {
+  return Math.max(fin - guessReveal, 0) * 1000;
 }
