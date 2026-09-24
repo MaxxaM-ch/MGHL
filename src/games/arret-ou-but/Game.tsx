@@ -165,6 +165,10 @@ export default function Game() {
     <div className="arret-ou-but">
       {phase !== "done" && currentClip && (
         <>
+          <p className="arret-ou-but__clip-counter">
+            Clip {currentIndex + 1}/{clips.length}
+          </p>
+
           <ClipPlayer
             // No key: this is one persistent player for the whole round,
             // not remounted per clip (see ClipPlayer's own comment) —

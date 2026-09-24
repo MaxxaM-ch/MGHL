@@ -1,8 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import type { Answer } from "../logic";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { getTimerUrgency, type Answer, type TimerUrgency } from "../logic";
 import "../../../styles/components/arret-ou-but/answer-controls.scss";
 
 const TIMER_SECONDS = 8;
+
+// Same hex values as $feedback-exact/$feedback-close/$feedback-wrong in
+// _colors.scss. Driven from JS via a CSS custom property (like
+// NextClipButton's --fill-percent) rather than modifier classes, since the
+// color needs to be set on two separate elements (the seconds label and
+// the bar fill) from a single source.
+const URGENCY_COLORS: Record<TimerUrgency, string> = {
+  calm: "#16a34a",
+  warning: "#d97706",
+  urgent: "#dc2626",
+};
 
 interface AnswerControlsProps {
   onSubmit: (answer: Answer | null) => void;
@@ -36,22 +47,31 @@ export default function AnswerControls({ onSubmit }: AnswerControlsProps) {
     onSubmit(selected);
   }
 
+  const urgency = getTimerUrgency(secondsLeft);
+  const fillPercent = (secondsLeft / TIMER_SECONDS) * 100;
+  const timerStyle = { "--timer-color": URGENCY_COLORS[urgency] } as CSSProperties;
+
   return (
     <div className="answer-controls">
-      <div className="answer-controls__timer" aria-live="polite">
-        {secondsLeft}s
+      <div className="answer-timer" style={timerStyle}>
+        <span className="answer-timer__seconds" aria-live="polite">
+          {secondsLeft}s
+        </span>
+        <div className="answer-timer__track">
+          <div className="answer-timer__fill" style={{ width: `${fillPercent}%` }} />
+        </div>
       </div>
       <div className="answer-controls__choices">
         <button
           type="button"
-          className={`answer-controls__choice${selected === "arret" ? " answer-controls__choice--selected" : ""}`}
+          className={`answer-controls__choice answer-controls__choice--arret${selected === "arret" ? " answer-controls__choice--selected" : ""}`}
           onClick={() => setSelected("arret")}
         >
           Arrêt
         </button>
         <button
           type="button"
-          className={`answer-controls__choice${selected === "but" ? " answer-controls__choice--selected" : ""}`}
+          className={`answer-controls__choice answer-controls__choice--but${selected === "but" ? " answer-controls__choice--selected" : ""}`}
           onClick={() => setSelected("but")}
         >
           But

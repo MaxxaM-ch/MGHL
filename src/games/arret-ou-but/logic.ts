@@ -16,3 +16,15 @@ export function buildShareGrid(results: boolean[]): string {
 export function computeNextButtonDurationMs(guessReveal: number, fin: number): number {
   return Math.max(fin - guessReveal, 0) * 1000;
 }
+
+export type TimerUrgency = "calm" | "warning" | "urgent";
+
+// Thresholds are absolute remaining-second values, not fractions of the
+// timer's total duration — this game's answer timer is always 8 seconds,
+// so a fixed 3/2/3 split (calm/warning/urgent) is simpler than a
+// percentage-based one that would need the total passed in for no benefit.
+export function getTimerUrgency(secondsLeft: number): TimerUrgency {
+  if (secondsLeft >= 6) return "calm";
+  if (secondsLeft >= 4) return "warning";
+  return "urgent";
+}

@@ -1,3 +1,4 @@
+@use "../../variables/colors" as *;
 @use "../../variables/spacing" as *;
 @use "../../variables/mixins" as *;
 
@@ -6,6 +7,12 @@
   flex-direction: column;
   align-items: center;
   gap: $p-m-16;
+  // Wider than the video's own 640px cap (clip-player.scss), so the answer
+  // timer bar below it — the only child stretched to width:100% — reads as
+  // "a bit wider than the video" instead of matching it exactly.
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
 .arret-ou-but__start-choices {
@@ -24,4 +31,16 @@
   color: var(--text);
   opacity: 0.75;
   margin: 0;
+}
+
+.arret-ou-but__clip-counter {
+  width: 100%;
+  max-width: 640px;
+  margin: 0;
+  color: var(--text);
+  opacity: 0.7;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: left;
 }

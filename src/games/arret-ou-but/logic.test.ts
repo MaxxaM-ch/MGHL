@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildShareGrid, computeNextButtonDurationMs, isCorrectGuess } from "./logic";
+import { buildShareGrid, computeNextButtonDurationMs, getTimerUrgency, isCorrectGuess } from "./logic";
 
 describe("isCorrectGuess", () => {
   it("is correct when the answer matches the clip's response", () => {
@@ -33,5 +33,25 @@ describe("computeNextButtonDurationMs", () => {
   it("never goes negative if fin is at or before guessReveal", () => {
     expect(computeNextButtonDurationMs(25, 25)).toBe(0);
     expect(computeNextButtonDurationMs(25, 24)).toBe(0);
+  });
+});
+
+describe("getTimerUrgency", () => {
+  it("is calm for the first 3 seconds of an 8-second timer", () => {
+    expect(getTimerUrgency(8)).toBe("calm");
+    expect(getTimerUrgency(7)).toBe("calm");
+    expect(getTimerUrgency(6)).toBe("calm");
+  });
+
+  it("is a warning for the next 2 seconds", () => {
+    expect(getTimerUrgency(5)).toBe("warning");
+    expect(getTimerUrgency(4)).toBe("warning");
+  });
+
+  it("is urgent for the last 3 seconds", () => {
+    expect(getTimerUrgency(3)).toBe("urgent");
+    expect(getTimerUrgency(2)).toBe("urgent");
+    expect(getTimerUrgency(1)).toBe("urgent");
+    expect(getTimerUrgency(0)).toBe("urgent");
   });
 });
