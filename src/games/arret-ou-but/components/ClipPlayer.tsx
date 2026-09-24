@@ -75,16 +75,20 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
     const interval = setInterval(() => {
       const player = playerRef.current;
       if (!player) return;
-      // The very first playVideo() call right after onReady/loadVideoById
-      // is unreliable — the player accepts it but silently stays paused (a
-      // known IFrame API timing quirk). Keep nudging it every tick until
-      // it actually starts; harmless to call on an already-playing video.
-      if (player.getPlayerState() !== PLAYER_STATE_PLAYING) {
-        player.playVideo();
-      }
 
       if (stageRef.current === "gel") {
+        // Once paused at gel, stop touching the player entirely — the nudge
+        // below would otherwise see "not playing" and immediately resume
+        // it, right past the freeze point, with nothing left to stop it
+        // before it plays out the whole answer.
         if (gelReachedRef.current) return;
+        // The very first playVideo() call right after onReady/loadVideoById
+        // is unreliable — the player accepts it but silently stays paused
+        // (a known IFrame API timing quirk). Keep nudging it every tick
+        // until it actually starts; harmless once it's already playing.
+        if (player.getPlayerState() !== PLAYER_STATE_PLAYING) {
+          player.playVideo();
+        }
         if (player.getCurrentTime() >= gelTargetRef.current) {
           gelReachedRef.current = true;
           player.pauseVideo();
@@ -98,12 +102,16 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
       // pause at guessReveal — only a callback fires there so the parent
       // can show the badge and start the "Suivant" button while the clip
       // keeps showing the actual outcome, instead of freezing right as it
-      // happens.
+      // happens. Same reasoning as above: once paused at fin, stop nudging.
+      if (finReachedRef.current) return;
+      if (player.getPlayerState() !== PLAYER_STATE_PLAYING) {
+        player.playVideo();
+      }
       if (!guessRevealReachedRef.current && player.getCurrentTime() >= guessRevealTargetRef.current) {
         guessRevealReachedRef.current = true;
         onReachedGuessReveal();
       }
-      if (!finReachedRef.current && player.getCurrentTime() >= finTargetRef.current) {
+      if (player.getCurrentTime() >= finTargetRef.current) {
         finReachedRef.current = true;
         player.pauseVideo();
         player.seekTo(finTargetRef.current, true);
