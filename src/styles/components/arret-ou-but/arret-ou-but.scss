@@ -44,3 +44,25 @@
   font-weight: 700;
   text-align: left;
 }
+
+// No card/panel here on purpose: this fills the space the video used to
+// occupy once the round ends, so it reads as the page's own content
+// instead of a modal that just lost its backdrop.
+.arret-ou-but__result {
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $p-m-24;
+  text-align: center;
+}
+
+.arret-ou-but__result-message {
+  margin: 0;
+  font-family: $font-display;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}

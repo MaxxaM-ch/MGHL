@@ -1,5 +1,11 @@
 export type Answer = "but" | "arret" | "none";
 
+export interface ClipResult {
+  youtubeId: string;
+  answer: Answer;
+  correct: boolean;
+}
+
 export function isCorrectGuess(answer: Answer, reponse: "but" | "arret"): boolean {
   return answer === reponse;
 }

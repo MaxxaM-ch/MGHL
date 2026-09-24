@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import ResultModal from "../../components/ResultModal";
+import CountdownTimer from "../../components/CountdownTimer";
+import StreakBadge from "../../components/StreakBadge";
 import AnswerControls from "./components/AnswerControls";
 import ClipPlayer, { type ClipPlayerHandle } from "./components/ClipPlayer";
 import RevealBadge from "./components/RevealBadge";
 import NextClipButton from "./components/NextClipButton";
+import RoundRecap from "./components/RoundRecap";
 import SoundToggle from "./components/SoundToggle";
 import { recordResult } from "../../lib/storage/stats";
 import { getDailyProgress, saveDailyProgress } from "../../lib/storage/daily-progress";
 import { formatDateKey, pickDailyItems } from "../../lib/daily-puzzle/seed";
-import { buildShareGrid, computeNextButtonDurationMs, isCorrectGuess, type Answer } from "./logic";
+import { computeNextButtonDurationMs, isCorrectGuess, type Answer, type ClipResult } from "./logic";
 import { CLIPS, type ArretOuButClip } from "../../data/curated/arret-ou-but-clips";
 import "../../styles/components/arret-ou-but/arret-ou-but.scss";
 
@@ -17,12 +19,6 @@ const CLIPS_PER_ROUND = 5;
 const MODAL_DELAY_MS = 1500;
 
 type Phase = "playing" | "answering" | "revealing" | "error" | "done";
-
-interface ClipResult {
-  youtubeId: string;
-  answer: Answer;
-  correct: boolean;
-}
 
 function encodeToken(result: ClipResult): string {
   return `${result.youtubeId}:${result.answer}`;
@@ -51,7 +47,6 @@ export default function Game() {
   const [revealed, setRevealed] = useState(false);
   const [results, setResults] = useState<ClipResult[]>([]);
   const [modalReady, setModalReady] = useState(false);
-  const [resultModalDismissed, setResultModalDismissed] = useState(false);
   const clipPlayerRef = useRef<ClipPlayerHandle>(null);
 
   useEffect(() => {
@@ -207,15 +202,15 @@ export default function Game() {
         </>
       )}
 
-      {modalReady && !resultModalDismissed && (
-        <ResultModal
-          message={`${score}/${results.length} bonne${score > 1 ? "s" : ""} réponse${score > 1 ? "s" : ""} !`}
-          scoreLine={`${score}/${results.length}`}
-          grid={buildShareGrid(results.map((r) => r.correct))}
-          gameId={GAME_ID}
-          gameTitle="Arrêt ou but ?"
-          onClose={() => setResultModalDismissed(true)}
-        />
+      {modalReady && (
+        <div className="arret-ou-but__result">
+          <p className="arret-ou-but__result-message">
+            {`${score} bonne${score > 1 ? "s" : ""} réponse${score > 1 ? "s" : ""} sur ${results.length} !`}
+          </p>
+          <RoundRecap clips={clips} results={results} />
+          <CountdownTimer />
+          <StreakBadge gameId={GAME_ID} />
+        </div>
       )}
     </div>
   );
