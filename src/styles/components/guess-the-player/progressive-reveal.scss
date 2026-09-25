@@ -158,23 +158,68 @@
   object-fit: contain;
 }
 
-// Below this width, the 224px reserved for the portrait image plus the
-// team logo leaves negative room for the name/stats text (it was
-// overflowing off-screen). Shrink the portrait and logo so the info
-// column keeps real space to breathe.
+// Below this width, the desktop's single row (photo | name/stats | logo)
+// leaves negative room for the text and was overflowing off-screen.
+// Stack instead: name/stats span the full width on top, photo and logo
+// sit side by side underneath — same pieces, rearranged to fit a narrow
+// card instead of shrunk to squeeze into the desktop layout.
 @media (max-width: $breakpoint-mobile) {
-  .player-reveal__image--portrait {
-    left: 8px;
-    width: 90px;
+  .player-reveal--revealed {
+    height: 280px;
+  }
+
+  .player-reveal__banner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    // Row 1 (info) is now the flexible one instead of the photo/logo row:
+    // sizing it to "1fr" and centering the info block within it (below)
+    // is what lowers the text toward the middle of the card instead of
+    // sitting right under the top padding.
+    grid-template-rows: 1fr auto;
+    grid-template-areas: "info info" "photo logo";
+    align-items: end;
+    padding: $p-m-16;
+    gap: $p-m-12;
   }
 
   .player-reveal__info {
-    padding: 0 $p-m-12 0 108px;
+    grid-area: info;
+    // Left-aligned at padding: 0, same as the portrait image below — both
+    // sit in the same grid column, starting right after the banner's own
+    // left padding, so they share the same left inset without needing a
+    // matching padding value repeated here.
+    padding: 0;
+    align-self: center;
+  }
+
+  .player-reveal__first-name {
+    font-size: 1.15rem;
+  }
+
+  .player-reveal__last-name {
+    font-size: clamp(1.7rem, 7vw, 2.2rem);
+  }
+
+  .player-reveal__stats {
+    font-size: 0.95rem;
+  }
+
+  .player-reveal__image--portrait {
+    grid-area: photo;
+    position: static;
+    justify-self: start;
+    width: 112px;
+    height: 138px;
+    // Cancels the banner's own bottom padding for this item only, so the
+    // portrait's bust runs flush to the card's bottom edge instead of
+    // leaving a gap — the logo alongside it keeps the normal padding.
+    margin-bottom: -$p-m-16;
   }
 
   .player-reveal__team-logo {
+    grid-area: logo;
     width: 56px;
     height: 56px;
-    margin-right: $p-m-8;
+    margin-right: 0;
   }
 }
