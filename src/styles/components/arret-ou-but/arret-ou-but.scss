@@ -57,6 +57,7 @@
   justify-content: center;
   gap: $p-m-24;
   text-align: center;
+  animation: arret-ou-but-result-fade-in 0.5s ease both;
 }
 
 .arret-ou-but__result-message {
@@ -65,4 +66,21 @@
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   text-transform: uppercase;
   letter-spacing: 0.02em;
+}
+
+@keyframes arret-ou-but-result-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arret-ou-but__result {
+    animation: none;
+  }
 }
