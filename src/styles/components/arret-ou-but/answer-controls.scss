@@ -1,0 +1,101 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+@use "../../variables/mixins" as *;
+
+.answer-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // No margin-top here: the parent .arret-ou-but is already a flex column
+  // with its own gap, so a margin on top of that gap was doubling the
+  // spacing above this block for no reason.
+  gap: $p-m-12;
+  width: 100%;
+}
+
+.answer-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $p-m-4;
+  width: 100%;
+}
+
+.answer-timer__seconds {
+  font-family: $font-display;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--timer-color);
+  transition: color 0.4s ease;
+}
+
+.answer-timer__track {
+  width: 100%;
+  height: 8px;
+  border-radius: $radius-pill;
+  background: var(--card-border);
+  overflow: hidden;
+}
+
+.answer-timer__fill {
+  height: 100%;
+  border-radius: $radius-pill;
+  background: var(--timer-color);
+  transition:
+    width 1s linear,
+    background-color 0.4s ease;
+}
+
+// Holds all three buttons (Arrêt, But, Valider) on one row — together with
+// the timer above, this is the whole answering phase, and keeping it to
+// two rows instead of three is what lets the page fit without scrolling.
+.answer-controls__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: $p-m-12;
+}
+
+.answer-controls__choice {
+  padding: $p-m-12 $p-m-20;
+  border-radius: $radius-8;
+  border: 2px solid;
+  color: var(--text);
+  font-family: $font-body;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+// Same soft-tint-background + stronger-border pairing as
+// attempt-history__row in guess-the-logo — color-coded so the two choices
+// are distinguishable at a glance, not just once one is selected.
+.answer-controls__choice--arret {
+  background: rgba($feedback-wrong, 0.12);
+  border-color: $feedback-wrong;
+}
+
+.answer-controls__choice--but {
+  background: rgba($feedback-exact, 0.12);
+  border-color: $feedback-exact;
+}
+
+.answer-controls__choice--arret.answer-controls__choice--selected {
+  background: rgba($feedback-wrong, 0.3);
+}
+
+.answer-controls__choice--but.answer-controls__choice--selected {
+  background: rgba($feedback-exact, 0.3);
+}
+
+.answer-controls__validate {
+  @include btn-accent;
+  border: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

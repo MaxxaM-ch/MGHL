@@ -1,0 +1,86 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+@use "../../variables/mixins" as *;
+
+.arret-ou-but {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $p-m-12;
+  // Wider than the video's own 640px cap (clip-player.scss), so the answer
+  // timer bar below it — the only child stretched to width:100% — reads as
+  // "a bit wider than the video" instead of matching it exactly.
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.arret-ou-but__start-choices {
+  display: flex;
+  align-items: center;
+  gap: $p-m-24;
+}
+
+.arret-ou-but__start {
+  @include btn-accent;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.arret-ou-but__error {
+  color: var(--text);
+  opacity: 0.75;
+  margin: 0;
+}
+
+.arret-ou-but__clip-counter {
+  width: 100%;
+  max-width: 640px;
+  margin: 0;
+  color: var(--text);
+  opacity: 0.7;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+// No card/panel here on purpose: this fills the space the video used to
+// occupy once the round ends, so it reads as the page's own content
+// instead of a modal that just lost its backdrop.
+.arret-ou-but__result {
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $p-m-24;
+  text-align: center;
+  animation: arret-ou-but-result-fade-in 0.5s ease both;
+}
+
+.arret-ou-but__result-message {
+  margin: 0;
+  font-family: $font-display;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+@keyframes arret-ou-but-result-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arret-ou-but__result {
+    animation: none;
+  }
+}

@@ -1,0 +1,58 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+// 396px is everything else on the page during the answering phase (header,
+// clip counter, gaps, answer controls, bottom padding) — capping the
+// width by the height budget that's actually left over (rather than a
+// flat 640px) is what keeps the whole page inside the viewport on short
+// screens, since height is derived from width via aspect-ratio below. The
+// 240px floor stops this from collapsing to nothing on extremely short
+// viewports (e.g. a phone in landscape) — the page scrolls a little there
+// instead, which is a better failure mode than a vanishing video.
+.clip-player {
+  position: relative;
+  width: min(100%, 640px, max(240px, calc((100vh - 396px) * 16 / 9)));
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  border-radius: $radius-16;
+  overflow: hidden;
+  background: #000;
+
+  // Oversized and centered, then clipped by the wrapper's overflow:hidden —
+  // pushes YouTube's own paused-state chrome (title bar along the top,
+  // suggested-video card in a corner) outside the visible crop, since
+  // those sit near the edges while the actual video content is centered.
+  iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 135%;
+    height: 135%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// Sits on top of the iframe and swallows clicks, so the player can never be
+// paused/played/seeked by clicking the video itself — the game's own
+// controls are the only way to interact with it.
+.clip-player__blocker {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.clip-player__unmute {
+  position: absolute;
+  bottom: $p-m-12;
+  right: $p-m-12;
+  z-index: 2;
+  padding: $p-m-8 $p-m-12;
+  border: none;
+  border-radius: $radius-8;
+  background: rgba(0, 0, 0, 0.65);
+  color: $bg-light;
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}

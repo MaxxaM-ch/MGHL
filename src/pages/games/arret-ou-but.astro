@@ -1,0 +1,17 @@
+---
+// src/pages/games/arret-ou-but.astro
+import GameLayout from "../../layouts/GameLayout.astro";
+import Game from "../../games/arret-ou-but/Game.tsx";
+---
+
+<GameLayout
+  title="Arrêt ou but ?"
+  description="Devine si chaque action se termine en but ou en arrêt, sur 5 clips."
+>
+  <Fragment slot="how-to-play">
+    <p>Chaque jour, 5 extraits vidéo d'actions de la LNH sont proposés, les mêmes pour tout le monde.</p>
+    <p>Chaque clip se met en pause juste avant son dénouement. Choisis "But" ou "Arrêt", puis valide — tu as 8 secondes pour te décider.</p>
+    <p>Le clip reprend ensuite pour te montrer le résultat. Ton score final est affiché sur 5.</p>
+  </Fragment>
+  <Game client:load />
+</GameLayout>

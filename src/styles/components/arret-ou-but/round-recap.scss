@@ -1,0 +1,42 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+.round-recap-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.round-recap {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $font-body;
+}
+
+.round-recap th,
+.round-recap td {
+  padding: $p-m-8 $p-m-12;
+  border: 1px solid var(--card-border);
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.round-recap thead th {
+  font-family: $font-display;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.round-recap tbody th {
+  font-weight: 700;
+  text-align: left;
+  opacity: 0.8;
+}
+
+.round-recap__correct {
+  background: rgba($feedback-exact, 0.12);
+}
+
+.round-recap__wrong {
+  background: rgba($feedback-wrong, 0.12);
+}

@@ -1,0 +1,21 @@
+@use "../../variables/colors" as *;
+@use "../../variables/spacing" as *;
+
+.next-clip-button {
+  position: relative;
+  margin-top: $p-m-16;
+  padding: $p-m-12 $p-m-24;
+  border: none;
+  border-radius: $radius-8;
+  color: $bg-light;
+  font-family: $font-body;
+  font-weight: 700;
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--fill-percent),
+    var(--accent-hover) var(--fill-percent)
+  );
+  transition: background 0.05s linear;
+}

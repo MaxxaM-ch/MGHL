@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDateKey, pickDailyItem } from "./seed";
+import { formatDateKey, pickDailyItem, pickDailyItems } from "./seed";
 
 describe("pickDailyItem", () => {
   it("returns the same item for the same date across multiple calls", () => {
@@ -34,6 +34,41 @@ describe("pickDailyItem", () => {
 
   it("throws when given an empty list", () => {
     expect(() => pickDailyItem([], new Date("2026-09-15T00:00:00Z"))).toThrow();
+  });
+});
+
+describe("pickDailyItems", () => {
+  const items = ["a", "b", "c", "d", "e", "f", "g", "h"];
+
+  it("is deterministic for the same date", () => {
+    const date = new Date("2026-09-23T00:00:00Z");
+    expect(pickDailyItems(items, date, 5)).toEqual(pickDailyItems(items, date, 5));
+  });
+
+  it("returns the requested number of items", () => {
+    const date = new Date("2026-09-23T00:00:00Z");
+    expect(pickDailyItems(items, date, 5)).toHaveLength(5);
+  });
+
+  it("returns distinct items, never repeating one within the same pick", () => {
+    const date = new Date("2026-09-23T00:00:00Z");
+    const picked = pickDailyItems(items, date, 5);
+    expect(new Set(picked).size).toBe(5);
+  });
+
+  it("differs between two different dates", () => {
+    const dateA = new Date("2026-09-23T00:00:00Z");
+    const dateB = new Date("2026-09-24T00:00:00Z");
+    expect(pickDailyItems(items, dateA, 5)).not.toEqual(pickDailyItems(items, dateB, 5));
+  });
+
+  it("clamps to the pool size when count exceeds the number of available items", () => {
+    const date = new Date("2026-09-23T00:00:00Z");
+    expect(pickDailyItems(items, date, 20)).toHaveLength(items.length);
+  });
+
+  it("throws when given an empty list", () => {
+    expect(() => pickDailyItems([], new Date("2026-09-23T00:00:00Z"), 5)).toThrow();
   });
 });
 
