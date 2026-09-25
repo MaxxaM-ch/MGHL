@@ -23,6 +23,14 @@ export function computeNextButtonDurationMs(guessReveal: number, fin: number): n
   return Math.max(fin - guessReveal, 0) * 1000;
 }
 
+// Splits a total real duration evenly across a fixed number of displayed
+// ticks (e.g. "3, 2, 1" shown over a shorter total than 3 real seconds) —
+// dividing the two lets the pre-clip countdown feel snappier than a plain
+// one-second-per-number timer while still showing a familiar 3/2/1 count.
+export function computeCountdownTickMs(totalMs: number, tickCount: number): number {
+  return totalMs / tickCount;
+}
+
 export type TimerUrgency = "calm" | "warning" | "urgent";
 
 // Thresholds are absolute remaining-second values, not fractions of the

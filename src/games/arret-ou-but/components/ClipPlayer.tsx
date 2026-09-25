@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from "react";
 import { createYouTubePlayer, PLAYER_STATE_PLAYING, type YouTubePlayer } from "../../../lib/youtube-player";
+import ClipCountdown from "./ClipCountdown";
 import "../../../styles/components/arret-ou-but/clip-player.scss";
 
 const POLL_INTERVAL_MS = 150;
@@ -15,13 +16,27 @@ interface ClipPlayerProps {
   guessReveal: number;
   fin: number;
   wantsSound: boolean;
+  countingDown: boolean;
+  onCountdownComplete: () => void;
   onReachedGel: () => void;
   onReachedGuessReveal: () => void;
   onError: () => void;
 }
 
 const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPlayer(
-  { youtubeId, debut, gel, guessReveal, fin, wantsSound, onReachedGel, onReachedGuessReveal, onError },
+  {
+    youtubeId,
+    debut,
+    gel,
+    guessReveal,
+    fin,
+    wantsSound,
+    countingDown,
+    onCountdownComplete,
+    onReachedGel,
+    onReachedGuessReveal,
+    onError,
+  },
   ref,
 ) {
   const mountId = `clip-player-${useId().replace(/:/g, "")}`;
@@ -33,6 +48,11 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
   const gelReachedRef = useRef(false);
   const guessRevealReachedRef = useRef(false);
   const finReachedRef = useRef(false);
+  // Mirrors the countingDown prop for the polling interval below, which is
+  // created once ([] deps) and reads refs rather than props — without this,
+  // a leftover video from the previous clip (paused at its own "fin") would
+  // get nudged back into playing behind the countdown overlay.
+  const countingDownRef = useRef(countingDown);
   // Starts already "unmuted" (no button) only if the player asked for sound
   // upfront; the async check below flips it back to muted if that attempt
   // was silently blocked, so the manual button stays a reliable fallback.
@@ -46,6 +66,10 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
       playerRef.current?.playVideo();
     },
   }));
+
+  useEffect(() => {
+    countingDownRef.current = countingDown;
+  }, [countingDown]);
 
   // Created once for the whole round (no youtubeId in the dependency
   // array): a single persistent player reused across every clip via
@@ -75,6 +99,10 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
     const interval = setInterval(() => {
       const player = playerRef.current;
       if (!player) return;
+      // Never touch the player while the pre-clip countdown is showing —
+      // otherwise this nudge would resume whatever the previous clip left
+      // paused on, behind the countdown overlay.
+      if (countingDownRef.current) return;
 
       if (stageRef.current === "gel") {
         // Once paused at gel, stop touching the player entirely — the nudge
@@ -128,6 +156,9 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
 
   // Loads whichever clip is current into the persistent player, including
   // the first one (retried until the player above finishes initializing).
+  // Gated on countingDown so the video only actually starts once the
+  // pre-clip countdown overlay finishes, not the instant the clip's props
+  // change — re-runs when countingDown flips to false to load right then.
   useEffect(() => {
     stageRef.current = "gel";
     gelTargetRef.current = gel;
@@ -136,6 +167,8 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
     gelReachedRef.current = false;
     guessRevealReachedRef.current = false;
     finReachedRef.current = false;
+
+    if (countingDown) return;
 
     let cancelled = false;
     const tryLoad = () => {
@@ -152,7 +185,7 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
     return () => {
       cancelled = true;
     };
-  }, [youtubeId, debut, gel, guessReveal, fin]);
+  }, [youtubeId, debut, gel, guessReveal, fin, countingDown]);
 
   function handleUnmute() {
     playerRef.current?.unMute();
@@ -170,7 +203,8 @@ const ClipPlayer = forwardRef<ClipPlayerHandle, ClipPlayerProps>(function ClipPl
     <div className="clip-player">
       <div id={mountId} />
       <div className="clip-player__blocker" />
-      {muted && (
+      {countingDown && <ClipCountdown onComplete={onCountdownComplete} />}
+      {muted && !countingDown && (
         <button type="button" className="clip-player__unmute" onClick={handleUnmute}>
           🔊 Activer le son
         </button>

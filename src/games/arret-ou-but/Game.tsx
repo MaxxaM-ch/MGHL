@@ -18,7 +18,7 @@ const GAME_ID = "arret-ou-but";
 const CLIPS_PER_ROUND = 5;
 const MODAL_DELAY_MS = 1500;
 
-type Phase = "playing" | "answering" | "revealing" | "error" | "done";
+type Phase = "countdown" | "playing" | "answering" | "revealing" | "error" | "done";
 
 function encodeToken(result: ClipResult): string {
   return `${result.youtubeId}:${result.answer}`;
@@ -38,7 +38,7 @@ export default function Game() {
   const [wantsSound, setWantsSound] = useState(false);
   const [clips, setClips] = useState<ArretOuButClip[] | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [phase, setPhase] = useState<Phase>("playing");
+  const [phase, setPhase] = useState<Phase>("countdown");
   const [selectedAnswer, setSelectedAnswer] = useState<Answer>("none");
   // True once the clip has reached its real resolution moment (guessReveal)
   // during the "revealing" phase — gates the badge and the "Suivant"
@@ -92,6 +92,10 @@ export default function Game() {
     setPhase("error");
   }, []);
 
+  const handleCountdownComplete = useCallback(() => {
+    setPhase("playing");
+  }, []);
+
   function handleAnswerSubmit(answer: Answer | null) {
     setSelectedAnswer(answer ?? "none");
     setRevealed(false);
@@ -129,7 +133,7 @@ export default function Game() {
     setCurrentIndex(nextIndex);
     setSelectedAnswer("none");
     setRevealed(false);
-    setPhase("playing");
+    setPhase("countdown");
   }
 
   useEffect(() => {
@@ -175,6 +179,8 @@ export default function Game() {
             guessReveal={currentClip.guessReveal}
             fin={currentClip.fin}
             wantsSound={wantsSound}
+            countingDown={phase === "countdown"}
+            onCountdownComplete={handleCountdownComplete}
             onReachedGel={handleReachedGel}
             onReachedGuessReveal={handleReachedGuessReveal}
             onError={handleError}

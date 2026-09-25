@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { buildShareGrid, computeNextButtonDurationMs, getTimerUrgency, isCorrectGuess } from "./logic";
+import {
+  buildShareGrid,
+  computeCountdownTickMs,
+  computeNextButtonDurationMs,
+  getTimerUrgency,
+  isCorrectGuess,
+} from "./logic";
 
 describe("isCorrectGuess", () => {
   it("is correct when the answer matches the clip's response", () => {
@@ -33,6 +39,16 @@ describe("computeNextButtonDurationMs", () => {
   it("never goes negative if fin is at or before guessReveal", () => {
     expect(computeNextButtonDurationMs(25, 25)).toBe(0);
     expect(computeNextButtonDurationMs(25, 24)).toBe(0);
+  });
+});
+
+describe("computeCountdownTickMs", () => {
+  it("splits the total duration evenly across every tick", () => {
+    expect(computeCountdownTickMs(2500, 3)).toBeCloseTo(833.33, 1);
+  });
+
+  it("returns the full duration when there is only one tick", () => {
+    expect(computeCountdownTickMs(1000, 1)).toBe(1000);
   });
 });
 
