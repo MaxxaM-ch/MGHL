@@ -159,6 +159,25 @@ $reveal-name-start-position: $reveal-logo-landing-position + 6%;
   display: none;
 }
 
+// The reveal logo is a fixed pixel size (55% of the banner's own fixed
+// 200px height), but the banner's width shrinks on narrow screens — so
+// the same 6%-of-width gap after its landing spot shrinks in real pixels
+// even though the logo itself hasn't, and the name ends up glued to it.
+@media (max-width: $breakpoint-mobile) {
+  .logo-reveal__name {
+    left: $reveal-name-start-position + 10%;
+  }
+}
+
+// Below this, there isn't enough width left for the name even with the
+// extra gap above — shrink the logo itself instead of pushing the name
+// further into an already-narrow column.
+@media (max-width: 400px) {
+  .logo-reveal__reveal-logo {
+    height: 40%;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .logo-reveal__image--light {
     display: none;

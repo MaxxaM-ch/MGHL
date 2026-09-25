@@ -91,7 +91,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   justify-items: center;
-  gap: $p-m-20;
+  // Row gap is much larger than the column gap on purpose: each card's
+  // icon (game-card.scss) floats above the card, overlapping it by half
+  // the icon's own height — on narrow screens, where the grid collapses
+  // to one column, a 20px gap wasn't enough to clear that and the icon
+  // overlapped the card stacked above it.
+  gap: $p-m-64 $p-m-20;
   animation: home-fade-up 0.7s ease 0.45s both;
 }
 
