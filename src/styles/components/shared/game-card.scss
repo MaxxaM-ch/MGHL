@@ -39,6 +39,20 @@
   width: $p-m-96;
 }
 
+.game-card__icon--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .game-card__icon--light {
+    display: none;
+  }
+
+  .game-card__icon--dark {
+    display: block;
+  }
+}
+
 .game-card__content {
   display: flex;
   flex-direction: column;

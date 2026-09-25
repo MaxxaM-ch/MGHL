@@ -6,14 +6,26 @@ interface Props {
   description: string;
   href: string;
   icon: string;
+  iconDark: string;
   iconClass?: string;
 }
 
-const { title, description, href, icon, iconClass } = Astro.props;
+const { title, description, href, icon, iconDark, iconClass } = Astro.props;
 ---
 
 <a class="game-card" href={href}>
-  <img class={`game-card__icon${iconClass ? ` ${iconClass}` : ""}`} src={icon} alt="" aria-hidden="true" />
+  <img
+    class={`game-card__icon game-card__icon--light${iconClass ? ` ${iconClass}` : ""}`}
+    src={icon}
+    alt=""
+    aria-hidden="true"
+  />
+  <img
+    class={`game-card__icon game-card__icon--dark${iconClass ? ` ${iconClass}` : ""}`}
+    src={iconDark}
+    alt=""
+    aria-hidden="true"
+  />
   <div class="game-card__content">
     <h3 class="game-card__title">{title}</h3>
     <p class="game-card__description">{description}</p>
