@@ -61,7 +61,7 @@ export default function AnswerControls({ onSubmit }: AnswerControlsProps) {
           <div className="answer-timer__fill" style={{ width: `${fillPercent}%` }} />
         </div>
       </div>
-      <div className="answer-controls__choices">
+      <div className="answer-controls__row">
         <button
           type="button"
           className={`answer-controls__choice answer-controls__choice--arret${selected === "arret" ? " answer-controls__choice--selected" : ""}`}
@@ -76,15 +76,15 @@ export default function AnswerControls({ onSubmit }: AnswerControlsProps) {
         >
           But
         </button>
+        <button
+          type="button"
+          className="answer-controls__validate"
+          disabled={selected === null}
+          onClick={handleValidate}
+        >
+          Valider
+        </button>
       </div>
-      <button
-        type="button"
-        className="answer-controls__validate"
-        disabled={selected === null}
-        onClick={handleValidate}
-      >
-        Valider
-      </button>
     </div>
   );
 }

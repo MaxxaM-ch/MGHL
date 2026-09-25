@@ -6,8 +6,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $p-m-16;
-  margin-top: $p-m-16;
+  // No margin-top here: the parent .arret-ou-but is already a flex column
+  // with its own gap, so a margin on top of that gap was doubling the
+  // spacing above this block for no reason.
+  gap: $p-m-12;
   width: 100%;
 }
 
@@ -44,13 +46,18 @@
     background-color 0.4s ease;
 }
 
-.answer-controls__choices {
+// Holds all three buttons (Arrêt, But, Valider) on one row — together with
+// the timer above, this is the whole answering phase, and keeping it to
+// two rows instead of three is what lets the page fit without scrolling.
+.answer-controls__row {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: $p-m-12;
 }
 
 .answer-controls__choice {
-  padding: $p-m-12 $p-m-24;
+  padding: $p-m-12 $p-m-20;
   border-radius: $radius-8;
   border: 2px solid;
   color: var(--text);

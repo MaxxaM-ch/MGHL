@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $p-m-16;
+  gap: $p-m-12;
   // Wider than the video's own 640px cap (clip-player.scss), so the answer
   // timer bar below it — the only child stretched to width:100% — reads as
   // "a bit wider than the video" instead of matching it exactly.

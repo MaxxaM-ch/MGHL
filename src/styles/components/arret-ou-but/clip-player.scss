@@ -1,10 +1,17 @@
 @use "../../variables/colors" as *;
 @use "../../variables/spacing" as *;
 
+// 396px is everything else on the page during the answering phase (header,
+// clip counter, gaps, answer controls, bottom padding) — capping the
+// width by the height budget that's actually left over (rather than a
+// flat 640px) is what keeps the whole page inside the viewport on short
+// screens, since height is derived from width via aspect-ratio below. The
+// 240px floor stops this from collapsing to nothing on extremely short
+// viewports (e.g. a phone in landscape) — the page scrolls a little there
+// instead, which is a better failure mode than a vanishing video.
 .clip-player {
   position: relative;
-  width: 100%;
-  max-width: 640px;
+  width: min(100%, 640px, max(240px, calc((100vh - 396px) * 16 / 9)));
   aspect-ratio: 16 / 9;
   margin: 0 auto;
   border-radius: $radius-16;
