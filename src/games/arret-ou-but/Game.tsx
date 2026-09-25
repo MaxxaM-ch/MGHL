@@ -78,7 +78,15 @@ export default function Game() {
     setResults(restoredResults);
     setCurrentIndex(restoredResults.length);
     setStarted(true);
-    if (restoredResults.length >= dailyClips.length) setPhase("done");
+    if (restoredResults.length >= dailyClips.length) {
+      setPhase("done");
+      // Skips MODAL_DELAY_MS for this path: that pause exists to let the
+      // last clip's reveal settle before jumping to the summary, but there
+      // is nothing playing here to pause after — the page just loaded
+      // straight into an already-finished round, so waiting would only
+      // leave a blank screen between the loader and the recap.
+      setModalReady(true);
+    }
   }, []);
 
   const handleReachedGel = useCallback(() => {
