@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import AttemptFeedbackRow, { FeedbackGridHeader } from "./components/AttemptFeedbackRow";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
+import Loader from "../../components/Loader";
 import ResultModal from "../../components/ResultModal";
 import ProgressiveReveal from "./components/ProgressiveReveal";
 import { recordResult } from "../../lib/storage/stats";
@@ -135,7 +136,7 @@ export default function Game() {
   }
 
   if (!pool || !target) {
-    return <p>Chargement des joueurs…</p>;
+    return <Loader label="Chargement des joueurs…" />;
   }
 
   return (

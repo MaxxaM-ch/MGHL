@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import CountdownTimer from "../../components/CountdownTimer";
+import Loader from "../../components/Loader";
 import StreakBadge from "../../components/StreakBadge";
 import AnswerControls from "./components/AnswerControls";
 import ClipPlayer, { type ClipPlayerHandle } from "./components/ClipPlayer";
@@ -142,7 +143,7 @@ export default function Game() {
     return () => clearTimeout(timer);
   }, [phase]);
 
-  if (!clips) return <p>Chargement…</p>;
+  if (!clips) return <Loader />;
 
   if (!started) {
     return (

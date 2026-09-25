@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import GuessInput, { type GuessOption } from "../../components/GuessInput";
+import Loader from "../../components/Loader";
 import ResultModal from "../../components/ResultModal";
 import AttemptHistory from "./components/AttemptHistory";
 import LogoReveal from "./components/LogoReveal";
@@ -110,7 +111,7 @@ export default function Game() {
   );
 
   if (!target || !focusPoint) {
-    return <p>Chargement…</p>;
+    return <Loader />;
   }
 
   // Gated on revealReady (delayed), not raw status: see REVEAL_DELAY_MS.

@@ -1,6 +1,11 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import "../styles/layouts/game-layout.scss";
+// Imported here (not just in Loader.tsx) so its CSS is part of this
+// server-rendered layout's own styles instead of depending on a React
+// island's JS bundle to inject it — arret-ou-but's bundle is large enough
+// that, in dev, the loader could flash unstyled before that JS finishes.
+import "../styles/components/shared/loader.scss";
 
 interface Props {
   title: string;
